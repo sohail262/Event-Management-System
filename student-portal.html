@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Club Hub - Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <style>
+        /* Student Portal CSS */
+        :root {
+            /* Light theme variables */
+            --primary-color: #4361ee;
+            --primary-light: #4895ef;
+            --secondary-color: #3f37c9;
+            --accent-color: #f72585;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --light-gray: #f8f9fa;
+            --dark-gray: #212529;
+            --text-color: #2D3748;
+            --text-light: #718096;
+            --background-color: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: 1px solid #e9ecef;
+            --navbar-bg: #ffffff;
+            --nav-border: 1px solid #e9ecef;
+            --hover-color: #4895ef;
+            --input-bg: #ffffff;
+            --modal-bg: #ffffff;
+            --badge-bg: #e6efff;
+            --badge-text: #4361ee;
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --card-hover-transform: translateY(-5px);
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+            --transition-slow: 0.4s ease;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+    
+        /* Modern color palette - update these values */
+        [data-theme="light"] {
+            --primary-color: #6366f1;
+            --primary-light: #818cf8;
+            --secondary-color: #4f46e5;
+            --accent-color: #ec4899;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --badge-bg: #e0e7ff;
+            --badge-text: #4f46e5;
+        }
+    
+        /* Dark theme variables - enhanced for better contrast */
+        [data-theme="dark"] {
+            --primary-color: #818cf8;
+            --primary-light: #a5b4fc;
+            --secondary-color: #6366f1;
+            --accent-color: #f472b6;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --light-gray: #1f2937;
+            --dark-gray: #111827;
+            --text-color: #f3f4f6;
+            --text-light: #d1d5db;
+            --background-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: 1px solid #334155;
+            --navbar-bg: rgba(15, 23, 42, 0.95);
+            --nav-border: 1px solid #334155;
+            --hover-color: #a5b4fc;
+            --input-bg: #1e293b;
+            --modal-bg: #1e293b;
+            --badge-bg: #312e81;
+            --badge-text: #c7d2fe;
+            --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.25);
+            --shadow-lg: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    
+        /* Add these new styles for enhanced visual appeal */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-medium), color var(--transition-medium);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(var(--primary-color-rgb, 99, 102, 241), 0.03) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(var(--accent-color-rgb, 236, 72, 153), 0.03) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(var(--secondary-color-rgb, 79, 70, 229), 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+    
+        /* Add RGB versions of colors for transparency effects */
+        :root {
+            --primary-color-rgb: 99, 102, 241;
+            --accent-color-rgb: 236, 72, 153;
+            --secondary-color-rgb: 79, 70, 229;
+        }
+        [data-theme="dark"] {
+            --primary-color-rgb: 129, 140, 248;
+            --accent-color-rgb: 244, 114, 182;
+            --secondary-color-rgb: 99, 102, 241;
+        }
+         /* Add these new styles for event cards and gallery items */
+    .event-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+        height: 100%;
+        border: var(--card-border);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .event-card:hover {
+        transform: var(--card-hover-transform);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .event-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--gradient-primary);
+    }
+    
+    .event-card.registration-open::before {
+        background: linear-gradient(to right, var(--success-color), var(--primary-light));
+    }
+    
+    .event-card.registration-closed::before {
+        background: linear-gradient(to right, var(--text-light), var(--dark-gray));
+    }
+    
+    .badge-registration {
+        font-size: 0.7rem;
+        padding: 0.35em 0.65em;
+        border-radius: 50rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .registration-open .badge-registration {
+        background-color: var(--success-color);
+        color: white;
+    }
+    
+    .registration-closed .badge-registration {
+        background-color: var(--text-light);
+        color: white;
+    }
+    
+    .gallery-item {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-md);
+        transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+        height: 100%;
+        border: var(--card-border);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .gallery-item:hover {
+        transform: var(--card-hover-transform);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .gallery-thumbnail {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+    }
+    
+    .gallery-thumbnail::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, transparent 70%, rgba(0,0,0,0.4));
+        pointer-events: none;
+    }
+    
+    .gallery-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-color);
+    }
+    
+    .gallery-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+    }
+    
+    .welcome-banner {
+        background: var(--gradient-primary);
+        border-radius: 20px;
+        padding: 2.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        opacity: 0.3;
+    }
+    
+    .welcome-image {
+        filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .section-title {
+        position: relative;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    
+    .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        height: 4px;
+        width: 60px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: var(--card-bg);
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+    
+    /* Enhanced floating action button */
+    .floating-action-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        z-index: 1000;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .floating-action-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .floating-action-btn i {
+        font-size: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .floating-action-btn.active i {
+        transform: rotate(45deg);
+    }
+    
+    .floating-menu {
+        position: fixed;
+        bottom: 6rem;
+        right: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        z-index: 999;
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    
+    .floating-menu.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+    }
+    
+    .floating-menu-item {
+        display: flex;
+        align-items: center;
+        background: var(--card-bg);
+        color: var(--text-color);
+        padding: 0.75rem 1rem;
+        border-radius: 50px;
+        box-shadow: var(--shadow-md);
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+    
+    .floating-menu-item:hover {
+        transform: translateX(-5px);
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .floating-menu-item i {
+        margin-right: 0.5rem;
+    }
+    
+    /* Enhanced user profile in navbar */
+    .user-profile {
+        padding: 0.5rem 0.75rem;
+        border-radius: 50px;
+        background-color: var(--badge-bg);
+        transition: all var(--transition-fast);
+    }
+    
+    .user-profile:hover {
+        background-color: var(--primary-light);
+        color: white;
+    }
+    
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Enhanced theme switch */
+    .theme-switch-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    
+    .theme-switch {
+        display: inline-block;
+        position: relative;
+        width: 60px;
+        height: 30px;
+    }
+    
+    .theme-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--badge-bg);
+        transition: .4s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5px;
+    }
+    
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        z-index: 2;
+    }
+    
+    input:checked + .slider {
+        background-color: var(--dark-gray);
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(30px);
+    }
+    
+    .sun-icon, .moon-icon {
+        color: var(--text-color);
+        font-size: 14px;
+        z-index: 1;
+    }
+    
+    .sun-icon {
+        margin-left: 4px;
+    }
+    
+    .moon-icon {
+        margin-right: 4px;
+    }
+    
+    input:checked ~ .slider .sun-icon {
+        color: var(--text-light);
+    }
+    
+    input:not(:checked) ~ .slider .moon-icon {
+        color: var(--text-light);
+    }
+    
+    /* Backdrop blur for navbar */
+    .backdrop-blur {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Gradient card */
+    .gradient-card {
+        background: var(--gradient-primary);
+    }
+    
+    /* Animation classes */
+    .fade-in {
+        animation: fadeIn 0.5s ease forwards;
+        opacity: 0;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    </style>
+</head>
+<body>
+    <!-- Background shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top backdrop-blur">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-calendar-event text-primary me-2"></i>
+            <span class="fw-bold">Student Club Hub</span>
+        </a>
+        <div class="d-flex align-items-center">
+            <!-- Theme Switch -->
+            <div class="theme-switch-wrapper me-3">
+                <label class="theme-switch" for="themeToggle">
+                    <input type="checkbox" id="themeToggle">
+                    <div class="slider rounded-pill">
+                        <i class="bi bi-sun-fill sun-icon"></i>
+                        <i class="bi bi-moon-fill moon-icon"></i>
+                    </div>
+                </label>
+            </div>
+            
+            <div class="d-flex align-items-center user-profile">
+                <div class="avatar-circle me-2">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <span id="studentName" class="fw-medium">Student</span>
+            </div>
+            <button class="btn btn-primary btn-sm ms-3 d-flex align-items-center" id="logoutBtn">
+                <i class="bi bi-box-arrow-right me-1"></i> Logout
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container main-content py-4">
+    <!-- Welcome Banner -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="welcome-banner gradient-card" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 id="welcomeMessage" class="mb-3">Welcome to Student Club Hub!</h2>
+                        <p class="lead mb-4">Discover exciting events, connect with clubs, and make the most of your campus experience.</p>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#eventsList" class="btn btn-light btn-lg">
+                                <i class="bi bi-calendar-check me-2"></i>Explore Events
+                            </a>
+                            <a href="#eventGallery" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-images me-2"></i>View Gallery
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 d-none d-md-block text-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2995/2995459.png" alt="Events" class="welcome-image" width="200">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-semibold">Upcoming Events</h5>
+                        <div class="text-muted small">
+                            <i class="bi bi-info-circle me-1"></i> Register for upcoming events
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="eventsList" class="row">
+                            <!-- Events will be loaded here -->
+                            <div class="col-12 text-center py-4">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Loading events...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Gallery Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-semibold">Event Gallery</h5>
+                        <div class="text-muted small">
+                            <i class="bi bi-images me-1"></i> Memories from past events
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="eventGallery" class="row">
+                            <!-- Gallery items will be loaded here -->
+                            <div class="col-12 text-center py-4">
+                                <div class="spinner-border text-primary" role="status"></div>
+                                <p class="mt-2 text-muted">Loading gallery...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title">Register for Event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="registrationForm">
+                    <div class="mb-4">
+                        <label for="studentEmail" class="form-label">Email</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-envelope text-primary"></i>
+                            </span>
+                            <input type="email" class="form-control border-start-0" id="studentEmail" placeholder="your.email@example.com" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="studentId" class="form-label">Student ID</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-person-badge text-primary"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="studentId" placeholder="Enter your student ID" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="studentDepartment" class="form-label">Department</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-building text-primary"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="studentDepartment" placeholder="Your department" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="studentYear" class="form-label">Year</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-calendar-date text-primary"></i>
+                            </span>
+                            <select class="form-select border-start-0" id="studentYear" required>
+                                <option value="" selected disabled>Select your year</option>
+                                <option value="1">First Year</option>
+                                <option value="2">Second Year</option>
+                                <option value="3">Third Year</option>
+                                <option value="4">Fourth Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="studentPhone" class="form-label">Phone Number</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-telephone text-primary"></i>
+                            </span>
+                            <input type="tel" class="form-control border-start-0" id="studentPhone" placeholder="Your phone number" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-light btn-lg" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary btn-lg" onclick="submitRegistration()">
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    <span class="submit-text">Register</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+                        
+                            <!-- Firebase Scripts -->
+                            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+                            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+                            <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+                            
+                            <!-- Bootstrap and other scripts -->
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                            <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+                            
+                            <script>
+                                // Initialize AOS
+                                AOS.init({
+                                    duration: 800,
+                                    easing: 'ease-in-out',
+                                    once: true
+                                });
+                        
+                                // Firebase configuration
+                                const firebaseConfig = {
+            apiKey: "AIzaSyC5Tc0paLSS9gxrWtOWKQL73RpxN3ycfPA",
+            authDomain: "event-management-system-44cec.firebaseapp.com",
+            projectId: "event-management-system-44cec",
+            storageBucket: "event-management-system-44cec.appspot.com",
+            messagingSenderId: "737978807381",
+            appId: "1:737978807381:web:ddab283404cdee111e90dc",
+            measurementId: "G-J4D9JJJF53"
+        };
+                                
+                                // Initialize Firebase
+                                firebase.initializeApp(firebaseConfig);
+                                const auth = firebase.auth();
+                                const db = firebase.firestore();
+                                
+                                let currentUser = null;
+                                let currentEventForRegistration = null;
+                        
+                                // Check authentication state
+                                auth.onAuthStateChanged(user => {
+                                    if (user) {
+                                        currentUser = user;
+                                        console.log('User logged in:', user.email);
+                                        document.getElementById('studentName').textContent = user.email.split('@')[0];
+                                        updateWelcomeMessage();
+                                        loadEvents();
+                                        loadGallery();
+                                    } else {
+                                        console.log('No user logged in');
+                                        window.location.href = 'student-login.html';
+                                    }
+                                });
+                        
+                                // Load events from Firestore
+                                async function loadEvents() {
+                                    const eventsContainer = document.getElementById('eventsList');
+                                    
+                                    try {
+                                        eventsContainer.innerHTML = `
+                                            <div class="col-12 text-center py-4">
+                                                <div class="spinner-border text-primary" role="status"></div>
+                                                <p class="mt-2 text-muted">Loading events...</p>
+                                            </div>
+                                        `;
+                                        
+                                        const snapshot = await db.collection('events')
+                                            .where('status', '==', 'approved')
+                                            .orderBy('date', 'asc')
+                                            .get();
+                                        
+                                        if (snapshot.empty) {
+                                            eventsContainer.innerHTML = `
+                                                <div class="col-12">
+                                                    <div class="empty-state">
+                                                        <i class="bi bi-calendar-x"></i>
+                                                        <h5>No events found</h5>
+                                                        <p>There are no upcoming events at the moment. Check back later!</p>
+                                                        <button class="btn btn-outline-primary" onclick="window.location.reload()">
+                                                            <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `;
+                                            return;
+                                        }
+                                        
+                                        eventsContainer.innerHTML = '';
+                                        let delay = 0;
+                                        
+                                        snapshot.forEach(doc => {
+                                            const event = doc.data();
+                                            const eventDate = new Date(event.date);
+                                            const today = new Date();
+                                            today.setHours(0, 0, 0, 0);
+                                            
+                                            // Skip past events
+                                            if (eventDate < today) return;
+                                            
+                                            const isRegistrationOpen = event.registration && 
+                                                                      event.registration.status === 'open' && 
+                                                                      (!event.registration.deadline || new Date(event.registration.deadline) >= today);
+                                            
+                                            const eventElement = document.createElement('div');
+                                            eventElement.className = 'col-lg-6 col-md-12 mb-4 fade-in';
+                                            eventElement.style.animationDelay = `${delay}ms`;
+                                            delay += 100;
+                                            
+                                            eventElement.innerHTML = `
+                                                <div class="event-card ${isRegistrationOpen ? 'registration-open' : 'registration-closed'}">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                                            <h5>${event.eventName}</h5>
+                                                            <span class="badge ${isRegistrationOpen ? 'bg-success' : 'bg-secondary'}">
+                                                                ${isRegistrationOpen ? 'Registration Open' : 'Registration Closed'}
+                                                            </span>
+                                                        </div>
+                                                        <p><i class="bi bi-people me-2"></i>${event.clubName}</p>
+                                                        <p><i class="bi bi-calendar me-2"></i>${formatDate(event.date)}</p>
+                                                        <p><i class="bi bi-clock me-2"></i>${event.startTime} - ${event.endTime}</p>
+                                                        <p><i class="bi bi-geo-alt me-2"></i>${event.venue}</p>
+                                                        
+                                                        <div class="mt-3 d-flex justify-content-between align-items-center">
+                                                            <button class="btn btn-sm btn-outline-primary" onclick="showEventDetails('${doc.id}')">
+                                                                <i class="bi bi-info-circle me-1"></i> Details
+                                                            </button>
+                                                            ${isRegistrationOpen ? 
+                                                                `<button class="btn btn-sm btn-primary" onclick="openRegistration('${doc.id}')">
+                                                                    <i class="bi bi-pencil-square me-1"></i> Register
+                                                                </button>` : 
+                                                                `<button class="btn btn-sm btn-secondary" disabled>
+                                                                    <i class="bi bi-lock me-1"></i> Registration Closed
+                                                                </button>`
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                            
+                                            eventsContainer.appendChild(eventElement);
+                                        });
+                                        
+                                        // If no future events were added
+                                        if (eventsContainer.innerHTML === '') {
+                                            eventsContainer.innerHTML = `
+                                                <div class="col-12">
+                                                    <div class="empty-state">
+                                                        <i class="bi bi-calendar-x"></i>
+                                                        <h5>No upcoming events</h5>
+                                                        <p>There are no upcoming events at the moment. Check back later!</p>
+                                                        <button class="btn btn-outline-primary" onclick="window.location.reload()">
+                                                            <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }
+                                    } catch (error) {
+                                        console.error('Error loading events:', error);
+                                        eventsContainer.innerHTML = `
+                                            <div class="col-12 text-center py-5">
+                                                <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: var(--danger-color);"></i>
+                                                <h5 class="mt-3">Error loading events</h5>
+                                                <p class="text-muted">Please try again later</p>
+                                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="loadEvents()">
+                                                    <i class="bi bi-arrow-repeat me-1"></i> Retry
+                                                </button>
+                                            </div>
+                                        `;
+                                    }
+                                }
+                        
+                                // Show event details
+                                function showEventDetails(eventId) {
+                                    db.collection('events').doc(eventId).get().then(doc => {
+                                        if (doc.exists) {
+                                            const event = doc.data();
+                                            
+                                            // Create modal for event details
+                                            let modal = document.getElementById('eventDetailsModal');
+                                            if (!modal) {
+                                                modal = document.createElement('div');
+                                                modal.className = 'modal fade';
+                                                modal.id = 'eventDetailsModal';
+                                                modal.tabIndex = '-1';
+                                                modal.innerHTML = `
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Event Details</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body p-4" id="eventDetailsContent">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `;
+                                                document.body.appendChild(modal);
+                                            }
+                                            
+                                            // Populate modal with event details
+                                            const modalContent = document.getElementById('eventDetailsContent');
+                                            modalContent.innerHTML = `
+                                                <div class="text-center mb-4">
+                                                    <h4 class="fw-bold">${event.eventName}</h4>
+                                                    <span class="badge ${event.registration && event.registration.status === 'open' ? 'bg-success' : 'bg-secondary'} mb-2">
+                                                        ${event.registration && event.registration.status === 'open' ? 'Registration Open' : 'Registration Closed'}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="event-info mb-4">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-people me-3" style="font-size: 1.2rem; color: var(--primary-color);"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Organized by</div>
+                                                            <div>${event.clubName}</div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-calendar me-3" style="font-size: 1.2rem; color: var(--primary-color);"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Date</div>
+                                                            <div>${formatDate(event.date)}</div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-clock me-3" style="font-size: 1.2rem; color: var(--primary-color);"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Time</div>
+                                                            <div>${event.startTime} - ${event.endTime}</div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-geo-alt me-3" style="font-size: 1.2rem; color: var(--primary-color);"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Venue</div>
+                                                            <div>${event.venue}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="mb-4">
+                                                    <h6 class="fw-semibold mb-2">Description</h6>
+                                                    <p>${event.description || 'No description provided.'}</p>
+                                                </div>
+                                                
+                                                ${event.registration && event.registration.status === 'open' ? `
+                                                    <div class="text-center mt-4">
+                                                        <button class="btn btn-primary" onclick="openRegistration('${eventId}')">
+                                                            <i class="bi bi-pencil-square me-2"></i>Register Now
+                                                        </button>
+                                                    </div>
+                                                ` : ''}
+                                            `;
+                                            
+                                            // Show the modal
+                                            const bsModal = new bootstrap.Modal(modal);
+                                            bsModal.show();
+                                        }
+                                    }).catch(error => {
+                                        console.error('Error getting event details:', error);
+                                        showAlert('Error loading event details', 'error');
+                                    });
+                                }
+                        
+                                // Load gallery from Firestore
+                                async function loadGallery() {
+                                    const galleryContainer = document.getElementById('eventGallery');
+                                    
+                                    try {
+                                        galleryContainer.innerHTML = `
+                                            <div class="col-12 text-center py-4">
+                                                <div class="spinner-border text-primary" role="status"></div>
+                                                <p class="mt-2 text-muted">Loading gallery...</p>
+                                            </div>
+                                        `;
+                                        
+                                        const snapshot = await db.collection('event_gallery')
+                                            .orderBy('date', 'desc')
+                                            .limit(6)
+                                            .get();
+                                        
+                                        if (snapshot.empty) {
+                                            galleryContainer.innerHTML = `
+                                                <div class="col-12">
+                                                    <div class="empty-state">
+                                                        <i class="bi bi-images"></i>
+                                                        <h5>No gallery items found</h5>
+                                                        <p>There are no gallery items available at the moment.</p>
+                                                        <button class="btn btn-outline-primary" onclick="window.location.reload()">
+                                                            <i class="bi bi-arrow-clockwise me-2"></i>Refresh
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `;
+                                            return;
+                                        }
+                        
+                                        let delay = 0;
+                                        galleryContainer.innerHTML = '';
+                                        
+                                        snapshot.forEach(doc => {
+                                            const gallery = doc.data();
+                                            const galleryElement = document.createElement('div');
+                                            galleryElement.className = 'col-md-4 col-sm-6 mb-4 fade-in';
+                                            galleryElement.style.animationDelay = `${delay}ms`;
+                                            delay += 100;
+                                            
+                                            galleryElement.innerHTML = `
+                                                <div class="gallery-item">
+                                                    <div class="gallery-content">
+                                                        <div class="gallery-icon mb-3">
+                                                            <i class="bi bi-images" style="font-size: 2rem; color: var(--primary-color);"></i>
+                                                        </div>
+                                                        <h6 class="gallery-title">${gallery.eventName}</h6>
+                                                        <div class="gallery-meta">
+                                                            <div><i class="bi bi-people me-1"></i>${gallery.clubName}</div>
+                                                            <div><i class="bi bi-calendar me-1"></i>${formatDate(gallery.date)}</div>
+                                                            <div><i class="bi bi-image me-1"></i>${gallery.photos ? gallery.photos.length : 0} Photos</div>
+                                                        </div>
+                                                        <button class="btn btn-sm btn-primary mt-3" onclick="viewGallery('${doc.id}')">
+                                                            <i class="bi bi-eye me-1"></i> View Gallery
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            `;
+                                            
+                                            galleryContainer.appendChild(galleryElement);
+                                        });
+                                    } catch (error) {
+                                        console.error('Error loading gallery:', error);
+                                        galleryContainer.innerHTML = `
+                                            <div class="col-12 text-center py-5">
+                                                <i class="bi bi-exclamation-triangle" style="font-size: 2rem; color: var(--danger-color);"></i>
+                                                <h5 class="mt-3">Error loading gallery</h5>
+                                                <p class="text-muted">Please try again later</p>
+                                                <button class="btn btn-sm btn-outline-primary mt-2" onclick="loadGallery()">
+                                                    <i class="bi bi-arrow-repeat me-1"></i> Retry
+                                                </button>
+                                            </div>
+                                        `;
+                                    }
+                                }
+                        
+                                // Helper function to format date
+                                function formatDate(dateString, withTime = false) {
+                                    const date = new Date(dateString);
+                                    const options = { 
+                                        year: 'numeric', 
+                                        month: 'short', 
+                                        day: 'numeric',
+                                        ...(withTime && { hour: '2-digit', minute: '2-digit' })
+                                    };
+                                    return date.toLocaleDateString(undefined, options);
+                                }
+                        
+                                // Function to view a specific gallery
+                                function viewGallery(galleryId) {
+                                    showAlert('Opening gallery...', 'info');
+                                    db.collection('event_gallery').doc(galleryId).get()
+                                        .then(doc => {
+                                            if (doc.exists) {
+                                                const gallery = doc.data();
+                                                if (gallery.driveLink) {
+                                                    window.open(gallery.driveLink, '_blank');
+                                                } else if (gallery.photos && gallery.photos.length > 0) {
+                                                    // Create a modal to view photos
+                                                    const photoUrls = gallery.photos.map(photo => photo.url);
+                                                    showPhotoModal(gallery.eventName, photoUrls);
+                                                } else {
+                                                    showAlert('No photos available for this event', 'warning');
+                                                }
+                                            } else {
+                                                showAlert('Gallery not found', 'error');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error viewing gallery:', error);
+                                            showAlert('Error viewing gallery', 'error');
+                                        });
+                                }
+                        
+                                // Function to show photo modal with enhanced UI
+                                function showPhotoModal(title, photoUrls) {
+                                    const modalId = 'photoModal';
+                                    let modal = document.getElementById(modalId);
+                                    
+                                    if (!modal) {
+                                        modal = document.createElement('div');
+                                        modal.className = 'modal fade';
+                                        modal.id = modalId;
+                                        modal.tabIndex = '-1';
+                                        modal.innerHTML = `
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">
+                                                            <i class="bi bi-images me-2"></i>${title}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body p-0">
+                                                        <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
+                                                            <div class="carousel-indicators" id="carousel-indicators"></div>
+                                                            <div class="carousel-inner" id="carousel-inner"></div>
+                                                            <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev">
+                                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Previous</span>
+                                                            </button>
+                                                            <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next">
+                                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                                <span class="visually-hidden">Next</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <span class="me-auto text-muted small">
+                                                            <i class="bi bi-info-circle me-1"></i>
+                                                            Use arrow keys or swipe to navigate
+                                                        </span>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `;
+                                        document.body.appendChild(modal);
+                                    }
+                                    
+                                    const carouselInner = modal.querySelector('#carousel-inner');
+                                    const carouselIndicators = modal.querySelector('#carousel-indicators');
+                                    carouselInner.innerHTML = '';
+                                    carouselIndicators.innerHTML = '';
+                                    
+                                    photoUrls.forEach((url, index) => {
+                                        // Add carousel item
+                                        const item = document.createElement('div');
+                                        item.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                                        item.innerHTML = `
+                                            <img src="${url}" class="d-block w-100" alt="Event photo ${index + 1}" 
+                                                 style="max-height: 70vh; object-fit: contain; background-color: #f8f9fa;">
+                                            <div class="carousel-caption d-none d-md-block">
+                                                <h5>${title}</h5>
+                                                <p>Photo ${index + 1} of ${photoUrls.length}</p>
+                                            </div>
+                                        `;
+                                        carouselInner.appendChild(item);
+                                        
+                                        // Add indicator
+                                        const indicator = document.createElement('button');
+                                        indicator.type = 'button';
+                                        indicator.setAttribute('data-bs-target', '#photoCarousel');
+                                        indicator.setAttribute('data-bs-slide-to', index.toString());
+                                        if (index === 0) {
+                                            indicator.classList.add('active');
+                                        }
+                                        indicator.setAttribute('aria-current', index === 0 ? 'true' : 'false');
+                                        indicator.setAttribute('aria-label', `Slide ${index + 1}`);
+                                        carouselIndicators.appendChild(indicator);
+                                    });
+                                    
+                                    const bsModal = new bootstrap.Modal(modal);
+                                    bsModal.show();
+                                    
+                                    // Add keyboard navigation
+                                    const handleKeydown = (e) => {
+                                        if (e.key === 'ArrowLeft') {
+                                            document.querySelector('.carousel-control-prev').click();
+                                        } else if (e.key === 'ArrowRight') {
+                                            document.querySelector('.carousel-control-next').click();
+                                        }
+                                    };
+                                    
+                                    modal.addEventListener('shown.bs.modal', () => {
+                                        document.addEventListener('keydown', handleKeydown);
+                                    });
+                                    
+                                    modal.addEventListener('hidden.bs.modal', () => {
+                                        document.removeEventListener('keydown', handleKeydown);
+                                    });
+                                }
+                        
+                                // Add a welcome banner with user's name
+                                function updateWelcomeMessage() {
+                                    if (currentUser) {
+                                        const username = currentUser.email.split('@')[0];
+                                        const greeting = getGreeting();
+                                        document.getElementById('welcomeMessage').innerHTML = `
+                                            ${greeting}, <span class="text-primary style="";">${username}</span>!
+                                        `;
+                                    }
+                                }
+                        
+                                // Get time-based greeting
+                                function getGreeting() {
+                                    const hour = new Date().getHours();
+                                    if (hour < 12) return "Good morning";
+                                    if (hour < 18) return "Good afternoon";
+                                    return "Good evening";
+                                }
+                        
+                                // Helper function to show animated alerts
+                                function showAlert(message, type = 'info') {
+                                    // Remove existing alerts
+                                    document.querySelectorAll('.alert').forEach(alert => alert.remove());
+                                    
+                                    const alertDiv = document.createElement('div');
+                                    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+                                    alertDiv.role = 'alert';
+                                    alertDiv.style.zIndex = '1100';
+                                    alertDiv.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.15)';
+                                    alertDiv.style.maxWidth = '350px';
+                                    alertDiv.style.opacity = '0';
+                                    alertDiv.style.transform = 'translateY(-20px)';
+                                    alertDiv.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                    
+                                    // Set icon based on alert type
+                                    const icon = type === 'success' ? 'bi-check-circle-fill' : 
+                                                 type === 'error' ? 'bi-exclamation-circle-fill' : 
+                                                 type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill';
+                                    
+                                    alertDiv.innerHTML = `
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi ${icon} me-2" style="font-size: 1.2rem;"></i>
+                                            <div>${message}</div>
+                                            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    `;
+                                    
+                                    document.body.appendChild(alertDiv);
+                                    
+                                    // Trigger animation
+                                    setTimeout(() => {
+                                        alertDiv.style.opacity = '1';
+                                        alertDiv.style.transform = 'translateY(0)';
+                                    }, 10);
+                                    
+                                    // Auto dismiss after 3 seconds
+                                    setTimeout(() => {
+                                        alertDiv.style.opacity = '0';
+                                        alertDiv.style.transform = 'translateY(-20px)';
+                                        setTimeout(() => alertDiv.remove(), 300);
+                                    }, 3000);
+                                }
+                        
+                                // Open Registration with enhanced UI
+                                function openRegistration(eventId) {
+    currentEventForRegistration = eventId;
+    
+    // Get event details to show in the modal
+    db.collection('events').doc(eventId).get().then(doc => {
+        if (doc.exists) {
+            const event = doc.data();
+            
+            // Update modal title with event name
+            const modalTitle = document.querySelector('#registrationModal .modal-title');
+            modalTitle.innerHTML = `
+                <i class="bi bi-pencil-square me-2"></i>
+                Register for ${event.eventName}
+            `;
+            
+            // Add event details to the modal
+            const modalBody = document.querySelector('#registrationModal .modal-body');
+            const eventDetailsHtml = `
+                <div class="event-details mb-4 p-3 bg-light rounded">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-calendar-event me-2 text-primary"></i>
+                        <strong>${event.eventName}</strong>
+                    </div>
+                    <div class="small text-muted mb-1">
+                        <i class="bi bi-people me-1"></i> ${event.clubName}
+                    </div>
+                    <div class="small text-muted mb-1">
+                        <i class="bi bi-calendar me-1"></i> ${formatDate(event.date)}
+                    </div>
+                    <div class="small text-muted">
+                        <i class="bi bi-clock me-1"></i> ${event.startTime} - ${event.endTime}
+                    </div>
+                </div>
+            `;
+            
+            // Insert event details before the form
+            const form = document.getElementById('registrationForm');
+            
+            // Remove previous event details if they exist
+            const existingDetails = document.querySelector('#registrationModal .event-details');
+            if (existingDetails) {
+                existingDetails.remove();
+            }
+            
+            form.insertAdjacentHTML('beforebegin', eventDetailsHtml);
+            
+            // Pre-fill email if user is logged in
+            if (currentUser && currentUser.email) {
+                document.getElementById('studentEmail').value = currentUser.email;
+            }
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            modal.show();
+        }
+    }).catch(error => {
+        console.error('Error getting event details:', error);
+        showAlert('Error loading event details', 'error');
+    });
+} const modal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            const carouselInner = modal.querySelector('#carousel-inner');
+            carouselInner.innerHTML = '';
+            
+            photoUrls.forEach((url, index) => {
+                const item = document.createElement('div');
+                item.className = `carousel-item ${index === 0 ? 'active' : ''}`;
+                item.innerHTML = `
+                    <img src="${url}" class="d-block w-100" alt="Event photo ${index + 1}" style="max-height: 70vh; object-fit: contain;">
+                `;
+                carouselInner.appendChild(item);
+            });
+            
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        
+
+        // Function to open registration modal
+        function openRegistration(eventId) {
+            currentEventForRegistration = eventId;
+            
+            // Get event details
+            db.collection('events').doc(eventId).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const event = doc.data();
+                        
+                        // Update modal title
+document.querySelector('#registrationModal .modal-title').textContent = `Register for ${event.eventName}`;
+
+                        
+                        // Pre-fill email if user is logged in
+                        if (currentUser && currentUser.email) {
+                            document.getElementById('studentEmail').value = currentUser.email;
+                        }
+                        
+                        // Show the modal
+                        const modal = new bootstrap.Modal(document.getElementById('registrationModal'));
+                        modal.show();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error getting event details:', error);
+                    showAlert('Error loading event details', 'error');
+                });
+        }
+
+        // Function to submit registration
+        function submitRegistration() {
+            if (!currentEventForRegistration) {
+                showAlert('No event selected for registration', 'error');
+                return;
+            }
+            
+            // Get form values
+            const email = document.getElementById('studentEmail').value;
+            const studentId = document.getElementById('studentId').value;
+            const department = document.getElementById('studentDepartment').value;
+            const year = document.getElementById('studentYear').value;
+            const phone = document.getElementById('studentPhone').value;
+            
+            // Validate form
+            if (!email || !studentId || !department || !year || !phone) {
+                showAlert('Please fill all required fields', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('#registrationModal .btn-primary');
+            const spinner = submitBtn.querySelector('.spinner-border');
+            const submitText = submitBtn.querySelector('.submit-text');
+            
+            submitBtn.disabled = true;
+            spinner.classList.remove('d-none');
+            submitText.textContent = 'Registering...';
+            
+            // Create registration data
+            const registrationData = {
+                eventId: currentEventForRegistration,
+                studentEmail: email,
+                studentId: studentId,
+                department: department,
+                year: year,
+                phone: phone,
+                userId: currentUser.uid,
+                status: 'pending',
+                registeredAt: new Date().toISOString()
+            };
+            
+            // Save to Firestore
+            db.collection('registrations').add(registrationData)
+                .then(() => {
+                    // Reset form and close modal
+                    document.getElementById('registrationForm').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('registrationModal')).hide();
+                    
+                    // Show success message
+                    showAlert('Registration successful! You will receive a confirmation email.', 'success');
+                })
+                .catch(error => {
+                    console.error('Error submitting registration:', error);
+                    showAlert('Error submitting registration. Please try again.', 'error');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    spinner.classList.add('d-none');
+                    submitText.textContent = 'Register';
+                });
+        }
+
+        // Helper function to show alerts
+        function showAlert(message, type = 'info') {
+            // Create alert element
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.maxWidth = '400px';
+            alertDiv.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+            
+            // Set icon based on alert type
+            let icon = 'info-circle';
+            if (type === 'success') icon = 'check-circle';
+            if (type === 'warning') icon = 'exclamation-triangle';
+            if (type === 'error' || type === 'danger') icon = 'exclamation-circle';
+            
+            alertDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-${icon} me-2"></i>
+                    <div>${message}</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Add to document
+            document.body.appendChild(alertDiv);
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                alertDiv.classList.remove('show');
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 5000);
+        }
+
+        // Logout function
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    window.location.href = 'student-login.html';
+                })
+                .catch(error => {
+                    console.error('Error signing out:', error);
+                    showAlert('Error signing out', 'error');
+                });
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeToggle.checked = true;
+        }
+        
+        // Toggle theme when switch is clicked
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Floating action button functionality
+        const floatingBtn = document.getElementById('floatingActionBtn');
+        const floatingMenu = document.getElementById('floatingMenu');
+        
+        floatingBtn.addEventListener('click', () => {
+            floatingBtn.classList.toggle('active');
+            floatingMenu.classList.toggle('active');
+        });
+        
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            showAlert('Refreshing content...', 'info');
+            Promise.all([
+                loadEvents(),
+                loadGallery()
+            ]).then(() => {
+                showAlert('Content refreshed!', 'success');
+            });
+        });
+        
+        // Scroll to top button
+        document.getElementById('scrollTopBtn').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Help button
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            showAlert('Need help? Contact support at support@studentclubhub.com', 'info');
+        });
+
+        // Initialize tilt effect for cards
+        function initTiltEffect() {
+            const cards = document.querySelectorAll('.event-card, .gallery-item');
+            
+            cards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const deltaX = (x - centerX) / centerX;
+                    const deltaY = (y - centerY) / centerY;
+                    
+                    card.style.transform = `perspective(1000px) rotateX(${deltaY * -3}deg) rotateY(${deltaX * 3}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+        }
+
+        // Add smooth scrolling for all links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+    <!-- Floating Action Button -->
+<div class="floating-action-btn" id="floatingActionBtn">
+    <i class="bi bi-plus"></i>
+</div>
+
+<!-- Floating Menu -->
+<div class="floating-menu" id="floatingMenu">
+    <div class="floating-menu-item" id="refreshBtn">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span>Refresh</span>
+    </div>
+    <div class="floating-menu-item" id="scrollTopBtn">
+        <i class="bi bi-arrow-up"></i>
+        <span>Scroll to Top</span>
+    </div>
+    <div class="floating-menu-item" id="helpBtn">
+        <i class="bi bi-question-circle"></i>
+        <span>Help</span>
+    </div>
+</div>
+</body>
+</html>

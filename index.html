@@ -1,0 +1,4454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Club Hub - Club Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+     :root {
+            --primary-color: #4361ee;
+            --primary-light: #4895ef;
+            --primary-dark: #3f37c9;
+            --secondary-color: #2b2d42;
+            --accent-color: #f72585;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #e63946;
+            --light-gray: #f8f9fa;
+            --border-radius: 10px;
+            --card-border-radius: 12px;
+            --transition-speed: 0.3s;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--secondary-color);
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: white;
+            box-shadow: var(--box-shadow);
+            padding: 12px 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .navbar-brand:hover {
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            position: relative;
+            padding: 8px 15px;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 80%;
+            left: 10%;
+        }
+        
+        .nav-link.active:after {
+            width: 80%;
+            left: 10%;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(67, 97, 238, 0.5);
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--box-shadow);
+            transition: all var(--transition-speed) ease;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            border-bottom: none;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+        
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Calendar Styles */
+        .fc {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .fc .fc-button-primary {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            padding: 8px 15px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .fc .fc-button-primary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        .fc-day-today {
+            background-color: rgba(67, 97, 238, 0.1) !important;
+        }
+
+        .fc-event {
+            border-radius: 6px;
+            padding: 4px 8px;
+            margin: 2px 0;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            border: none !important;
+        }
+        
+        .fc-event:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Custom event colors */
+        .fc-event.approved-event {
+            background-color: var(--success-color) !important;
+        }
+        
+        .fc-event.pending-event {
+            background-color: var(--warning-color) !important;
+        }
+        
+        .fc-event.rejected-event {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* Availability Panel Styles */
+        .venue-status-list, .equipment-status-list, .time-slots-list {
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .venue-item, .equipment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed) ease;
+        }
+        
+        .venue-item:hover, .equipment-item:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: translateX(5px);
+        }
+
+        .venue-item:last-child, .equipment-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Rest of your existing styles... */
+        .approval-timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .approval-step {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 20px;
+            border-left: 2px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .approval-step:hover {
+            transform: translateX(5px);
+        }
+
+        .approval-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .approval-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dee2e6;
+            transition: all 0.3s ease;
+        }
+        
+        .approval-step:hover::before {
+            transform: scale(1.2);
+        }
+
+        .approval-step.approved::before {
+            background: var(--success-color);
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+
+        .approval-step.rejected::before {
+            background: var(--danger-color);
+            box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+        }
+
+        .approval-step.conditional::before {
+            background: var(--warning-color);
+            box-shadow: 0 0 10px rgba(248, 150, 30, 0.5);
+        }
+
+        .approval-step-content {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .approval-step-content:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 12px;
+        }
+
+        .progress-bar {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            transition: width 1s ease;
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.9rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .status-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .status-available {
+            background-color: rgba(76, 201, 240, 0.2);
+            color: #4cc9f0;
+        }
+
+        .status-unavailable {
+            background-color: rgba(230, 57, 70, 0.2);
+            color: #e63946;
+        }
+
+        .status-partial {
+            background-color: rgba(248, 150, 30, 0.2);
+            color: #f8961e;
+        }
+
+        /* Time Slots Styles */
+        .time-slot {
+            padding: 0.9rem;
+            margin-bottom: 0.8rem;
+            border-radius: var(--border-radius);
+            background-color: white;
+            border: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition-speed) ease;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        }
+
+        .time-slot:hover {
+            transform: translateX(8px);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.15);
+        }
+
+        .time-slot.available {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .time-slot.unavailable {
+            border-left: 4px solid var(--danger-color);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Button styles */
+        .btn {
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            border: none;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        /* Form Styles */
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+            /* Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: var(--card-border-radius);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+        color: white;
+        border-bottom: none;
+        padding: 1.2rem 1.5rem;
+    }
+    
+    .modal-header .modal-title {
+        font-weight: 600;
+    }
+    
+    .modal-header .btn-close {
+        color: white;
+        opacity: 0.8;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-header .btn-close:hover {
+        opacity: 1;
+        transform: rotate(90deg);
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 1rem 1.5rem;
+    }
+    
+    /* Form Section Styles in Modals */
+    .form-section {
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1.8rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    
+    .form-section-header {
+        position: relative;
+        color: var(--secondary-color);
+        font-weight: 600;
+        padding-bottom: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .form-section-header:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 60px;
+        background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+        border-radius: 3px;
+    }
+    
+    /* Form Table Styles */
+    .form-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-table th {
+        background-color: rgba(67, 97, 238, 0.05);
+        color: var(--secondary-color);
+        font-weight: 600;
+        padding: 0.8rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .form-table td {
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        vertical-align: middle;
+    }
+    
+    .form-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    /* Budget Table Styles */
+    .budget-table {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .budget-table th {
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(76, 201, 240, 0.1) 100%);
+        color: var(--secondary-color);
+        font-weight: 600;
+        padding: 0.8rem 1rem;
+    }
+    
+    .budget-table input {
+        text-align: right;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .budget-table input:focus {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(67, 97, 238, 0.1);
+    }
+    
+    .budget-table .form-control:read-only {
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+    }
+    
+    .grand-total-row {
+        background-color: rgba(67, 97, 238, 0.05);
+    }
+    
+    .grand-total-row input {
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+    
+  /* My Events Section Styles - Updated */
+.events-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.event-card {
+    border: none;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--box-shadow);
+    transition: all var(--transition-speed) ease;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.event-card .card-header {
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.event-card .card-header .event-date {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.3rem 0.6rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.event-card .card-body {
+    padding: 1.25rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card .card-title {
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.event-card .card-text {
+    color: #6c757d;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+}
+
+.event-card .event-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    color: #6c757d;
+}
+
+.event-card .event-meta i {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
+}
+
+.event-card .event-meta-item {
+    margin-right: 1rem;
+    font-size: 0.9rem;
+}
+
+.event-card .badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 500;
+    border-radius: 50px;
+    margin-bottom: 1rem;
+}
+
+.event-card .card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1rem 1.25rem;
+}
+
+.event-card .btn-group {
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.event-card .btn {
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.event-card .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+.event-card .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.event-card .registration-info {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.event-card .registration-info p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.event-card .registration-info .progress {
+    height: 8px;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.event-card .registration-info .progress-bar {
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+}
+
+/* Registration Link Modal - Updated */
+.registration-link-container {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.registration-link-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.registration-link-header i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-right: 0.75rem;
+}
+
+.registration-link-header h6 {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.registration-link-form .input-group {
+    margin-bottom: 1rem;
+}
+
+.registration-link-form .input-group-text {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(67, 97, 238, 0.2);
+    border-right: none;
+}
+
+.registration-link-form .form-control {
+    border-left: none;
+    border-color: rgba(67, 97, 238, 0.2);
+}
+
+.registration-link-form .form-control:focus {
+    box-shadow: none;
+    border-color: rgba(67, 97, 238, 0.3);
+}
+
+.registration-link-form .form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.registration-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.registration-option {
+    flex: 1;
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.registration-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.registration-option-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.registration-option-header i {
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+.registration-option-header h6 {
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.registration-option p {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+    /* Proposals Section Styles */
+    .proposal-card {
+        border: none;
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--box-shadow);
+        transition: all var(--transition-speed) ease;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .proposal-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .proposal-card .card-header {
+        padding: 1rem 1.25rem;
+        border-bottom: none;
+    }
+    
+    .proposal-card.pending .card-header {
+        background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
+        color: white;
+    }
+    
+    .proposal-card.approved .card-header {
+        background: linear-gradient(135deg, #4cc9f0 0%, #4361ee 100%);
+        color: white;
+    }
+    
+    .proposal-card.rejected .card-header {
+        background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
+        color: white;
+    }
+    
+    .proposal-card .card-body {
+        padding: 1.25rem;
+    }
+    
+    .proposal-card .approval-timeline {
+        margin-top: 1rem;
+    }
+    
+    /* Gallery Section Styles */
+    .gallery-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .gallery-item {
+        border-radius: var(--card-border-radius);
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+        transition: all var(--transition-speed) ease;
+        position: relative;
+        height: 250px;
+    }
+    
+    .gallery-item:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.5s ease;
+    }
+    
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+    
+    .gallery-item .gallery-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        color: white;
+        padding: 1.5rem 1rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-item:hover .gallery-overlay {
+        padding-bottom: 2rem;
+    }
+    
+    .gallery-item .gallery-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .gallery-item .gallery-date {
+        font-size: 0.875rem;
+        opacity: 0.8;
+    }
+    
+    .gallery-item .gallery-view {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: rgba(67, 97, 238, 0.9);
+        color: white;
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        opacity: 0;
+    }
+    
+    .gallery-item:hover .gallery-view {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    
+    /* Registration Modal Styles */
+    .registrations-table {
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .registrations-table th {
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(76, 201, 240, 0.1) 100%);
+        color: var(--secondary-color);
+        font-weight: 600;
+        padding: 0.8rem 1rem;
+    }
+    
+    .registrations-table td {
+        vertical-align: middle;
+        padding: 0.8rem 1rem;
+    }
+    
+    /* Event Details Modal */
+    .event-details .badge {
+        padding: 0.5rem 0.75rem;
+        font-weight: 500;
+        border-radius: 50px;
+    }
+    
+    .approval-progress {
+        position: relative;
+        padding: 1.5rem 0;
+    }
+    
+    .approval-step {
+        position: relative;
+        padding-left: 2rem;
+        margin-bottom: 1.5rem;
+        border-left: 2px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .approval-step:last-child {
+        margin-bottom: 0;
+    }
+    
+    .approval-step::before {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 0;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: #dee2e6;
+        transition: all 0.3s ease;
+    }
+    
+    .approval-step.completed::before {
+        background: var(--success-color);
+        box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+    }
+    
+    .approval-step.current::before {
+        background: var(--warning-color);
+        box-shadow: 0 0 10px rgba(248, 150, 30, 0.5);
+    }
+    
+    .approval-step.rejected::before {
+        background: var(--danger-color);
+        box-shadow: 0 0 10px rgba(230, 57, 70, 0.5);
+    }
+    
+    .approval-step-content {
+        background: white;
+        padding: 1.25rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .approval-step-content:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Animation for status changes */
+    @keyframes statusPulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .status-change {
+        animation: statusPulse 1s ease-in-out;
+    }
+    
+    /* Loading animation for tables */
+    .loading-row td {
+        position: relative;
+        height: 100px;
+    }
+    
+    .loading-row .spinner-border {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    /* Empty state styling */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1.5rem;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: rgba(67, 97, 238, 0.2);
+        margin-bottom: 1.5rem;
+    }
+    
+    .empty-state h5 {
+        font-weight: 600;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        max-width: 500px;
+        margin: 0 auto 1.5rem;
+    }
+        /* Animation keyframes */
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        /* Loading spinner */
+        #loadingSpinner {
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+        }
+        
+        #loadingSpinner .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.25rem;
+            color: var(--primary-color);
+            animation: spinner-grow 1s linear infinite;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .fc .fc-toolbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .fc .fc-toolbar-title {
+                font-size: 1.1rem;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Continuing from previous part -->
+<body>
+    <!-- Navigation Bar -->
+     <!-- Navigation Bar -->
+     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-calendar-event-fill me-2"></i>EventPro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="myEventsLink">
+                            <i class="bi bi-calendar-check me-1"></i> My Events
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="proposalsLink">
+                            <i class="bi bi-file-earmark-text me-1"></i> Proposals
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="galleryLink">
+                            <i class="bi bi-images me-1"></i> Gallery
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="me-3 badge bg-primary" id="clubNameDisplay"></span>
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAMUSURBVFiFvddNiJVVGAfw3zszOuN4Z8wPS0vDmXK0xFIzP2IwEVfRJoQWQRBUq2gXFLRrVYtaCLWKVgVBtCgICgqiD60sKyJK0jQtnXSctPwYR50Zx5n7tDjnvu+93vt+jFP0h8O9z3Pe85z/+Z7nOee9DMqyLPuoqsrDuBc3YwRDGMAJHMFX+AKHsqw6HvWVwQHkcBNexKNoi9bxN/ZhB45hDH0YRidmYyUWYwU6cQDvYVeWVWcvCGBZ1o6n8Qp6kvQpfI+9OIQf8Qv+wESSm4Uh3ICluA3LkUvWJ/E6tmVZdT4XQJZVPdiOx5P0BP7E+9iNr4OwTCPakrPuwD3oS9Z+w/NZVh2eEiDLqnnYiXuT9G58jJ1ZVh2b7uYXQWRYh6cwPxk+gA1ZVv11HkCWVZ34FC1vxziewyvYn2XVxZr8QhBZVp3Ei3gek0l6K77Msrkh0IkvcVuS3oSnsyz7Z6YbTwORZdVYlmUbsRUFrMG+LKvm5LAJjyTJt/DcdDf+PxBZVu3BJhSxCHtyWI+eJPkGtmRZVZ3phpcCkWXVKXyAGl7PYRVak8VXsSXLqvOXA+BCALvQwOoc7kySR7Ezy6qJywVwAYg9qGNtDkuTxR+wrz5N838ZBHEC36KOFTl0JYs/43iWVY3/A0QEsR91LMxhMEkexaEsq/6+EgAhiJ9Qx8IchpPEn/gmy6rfrySAAOI31NGfw82J+AR2Z1l14koDxBDHUMOsHG5MEn9hR5ZVf14NgADiKGqYncP1yeIYPsmy6vTVAgggjqCGjhx6k8VxfJxl1R9XEyCA+B51tOfQnSyewYdZVh27FgDTQXTk0JksjmMbvruaJ58OIsuq09iOWg7tycIEPsK3/8Xbp4OovxvPYlYO55LFGj7Bd1cTIgUxjrfRyGFOsnAOn+KHqw0QQIzh7fCX7EwWpvAZDv4XEFMgxvAOJnNoSxYa2I+D1+Lk00HU8S4mQgsmk4UGDuD7a3XyFEQD76EeQ3A+WZjCIRy+lid/EBvxHE5kWXUO/wLPFKTvmC9bagAAAABJRU5ErkJggg==" 
+                                alt="User" class="user-avatar me-2">
+                            <span id="adminName" class="fw-medium">Admin</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+   <!-- Main Content -->
+   <div class="container my-4">
+    <div class="row" data-aos="fade-up" data-aos-duration="800">
+        <!-- Calendar Section -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-white"><i class="bi bi-calendar3 me-2"></i>Event Calendar</h5>
+                        <button class="btn btn-light" id="checkAvailabilityBtn">
+                            <i class="bi bi-plus-lg me-2"></i>Check Availability & Book
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div id="calendar" class="p-3"></div>
+                </div>
+            </div>
+        </div>
+
+             <!-- Availability Panel -->
+             <div class="col-lg-4">
+                <div class="card shadow-sm">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 text-white"><i class="bi bi-building me-2"></i>Venue Availability</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="availabilityInfo" class="d-none">
+                            <div class="selected-date mb-3">
+                                <h6 class="fw-bold"><i class="bi bi-calendar-date me-2"></i>Selected Date:</h6>
+                                <p id="selectedDateDisplay" class="mb-2 ps-4 fw-medium"></p>
+                            </div>
+
+                            <div class="venue-availability mb-4">
+                                <h6 class="fw-bold"><i class="bi bi-geo-alt me-2"></i>Venue Status:</h6>
+                                <div class="venue-status-list">
+                                    <div class="venue-item mb-2">
+                                        <span class="venue-name"><i class="bi bi-building me-2"></i>Auditorium</span>
+                                        <span id="auditoriumStatus" class="status-badge"></span>
+                                    </div>
+                                    <div class="venue-item mb-2">
+                                        <span class="venue-name"><i class="bi bi-house me-2"></i>MPH</span>
+                                        <span id="mphStatus" class="status-badge"></span>
+                                    </div>
+                                    <div class="venue-item mb-2">
+                                        <span class="venue-name"><i class="bi bi-easel me-2"></i>Classroom</span>
+                                        <span id="classroomStatus" class="status-badge"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="equipment-availability mb-4">
+                                <h6 class="fw-bold"><i class="bi bi-tools me-2"></i>Equipment Status:</h6>
+                                <div class="equipment-status-list">
+                                    <div class="equipment-item mb-2">
+                                        <span class="equipment-name"><i class="bi bi-camera-video me-2"></i>Camera</span>
+                                        <span id="cameraStatus" class="status-badge"></span>
+                                    </div>
+                                    <div class="equipment-item mb-2">
+                                        <span class="equipment-name"><i class="bi bi-projector me-2"></i>Projector</span>
+                                        <span id="projectorStatus" class="status-badge"></span>
+                                    </div>
+                                    <div class="equipment-item mb-2">
+                                        <span class="equipment-name"><i class="bi bi-speaker me-2"></i>Sound System</span>
+                                        <span id="soundStatus" class="status-badge"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-slots mb-4">
+                                <h6 class="fw-bold"><i class="bi bi-clock me-2"></i>Available Time Slots:</h6>
+                                <div id="timeSlotsList" class="time-slots-list">
+                                    <!-- Time slots will be populated here -->
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary" id="proceedToBookBtn" disabled>
+                                    <i class="bi bi-calendar-plus me-2"></i>Proceed to Book Event
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="noDateSelected" class="text-center py-5 animate__animated animate__pulse animate__infinite">
+                            <i class="bi bi-calendar-plus display-3 text-primary opacity-50"></i>
+                            <p class="mt-3 text-muted">Select a date to check availability</p>
+                        </div>
+                    </div>
+                </div>
+
+             <!-- Existing Events Panel -->
+             <div class="card shadow-sm mt-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 text-white"><i class="bi bi-calendar-event me-2"></i>Events on Selected Date</h5>
+                </div>
+                <div class="card-body">
+                    <div id="existingEvents">
+                        <p class="text-muted text-center">No date selected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- Event Proposal Modal -->
+        <div class="modal fade" id="newEventModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">New Event Proposal</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="eventProposalForm">
+                            <div class="form-section">
+                                <h5 class="form-section-header">Event Proposal Form</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="schoolName" class="form-label">Name of the School</label>
+                                        <input type="text" class="form-control" id="schoolName" value="School of Computer Science and Engineering" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="submissionDate" class="form-label">Date of Submission</label>
+                                        <input type="date" class="form-control" id="submissionDate" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="clubName" class="form-label">Name of the Club/Committee</label>
+                                        <input type="text" class="form-control" id="clubName" readonly>
+                                    </div>
+                                </div>
+                                
+                                <table class="form-table">
+                                    <tr>
+                                        <td width="30%">1. Activity/Event Planned</td>
+                                        <td><input type="text" class="form-control" id="eventName" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2. Date and Day of the Program</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="date" class="form-control" id="eventDate" required readonly>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text" class="form-control" id="eventDay" readonly>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>3. Time</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Starting</label>
+                                                    <input type="time" class="form-control" id="startTime" required readonly>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Closing</label>
+                                                    <input type="time" class="form-control" id="endTime" required readonly>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>4. Venue</td>
+                                        <td>
+                                            <select class="form-select" id="venueType" required>
+                                                <option value="" selected disabled>Select venue type</option>
+                                                <option value="Auditorium">Auditorium</option>
+                                                <option value="MPH">MPH (Multi-Purpose Hall)</option>
+                                                <option value="Classroom">Classroom</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>5. Classes that are to be preponed</td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="secondYear">
+                                                        <label class="form-check-label" for="secondYear">Second Year</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="firstYear">
+                                                        <label class="form-check-label" for="firstYear">First Year</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>6. Event Details</td>
+                                        <td><textarea class="form-control" id="eventDetails" rows="3" required></textarea></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-header">Service Requirements</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Resources Required</label>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="Lights and Sound System" id="resourceLights">
+                                        <label class="form-check-label" for="resourceLights">
+                                            Lights and Sound System
+                                            <small>(Requires: Purchase Officer, IT Admin)</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="Camera" id="resourceCamera">
+                                        <label class="form-check-label" for="resourceCamera">
+                                            Camera
+                                            <small>(Requires: Purchase Officer)</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="Inauguration Lamp" id="resourceLamp">
+                                        <label class="form-check-label" for="resourceLamp">
+                                            Inauguration Lamp
+                                            <small>(Requires: Purchase Officer)</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="Executive lunch/dinner" id="resourceLunch">
+                                        <label class="form-check-label" for="resourceLunch">
+                                            Executive lunch/dinner
+                                            <small>(Requires: Food Incharge)</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="Projector" id="resourceProjector">
+                                        <label class="form-check-label" for="resourceProjector">
+                                            Projector
+                                            <small>(Requires: IT Admin)</small>
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" name="resources" value="IT Support" id="resourceIT">
+                                        <label class="form-check-label" for="resourceIT">
+                                            IT Support
+                                            <small>(Requires: IT Admin)</small>
+                                        </label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="otherResources" class="form-label">Other Resources (please specify)</label>
+                                        <textarea class="form-control" id="otherResources" name="otherResources" rows="2" placeholder="Specify any other resources needed"></textarea>
+                                        <small class="text-muted">Note: If you mention tea and snacks, Food Incharge will be added to approval flow.</small>
+                                    </div>
+                                </div>
+                            
+                            <!-- Add this after the Service Requirements section in your form -->
+<div class="form-section">
+    <h5 class="form-section-header">Budget Requirements</h5>
+    <table class="form-table budget-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th width="20%">Quantity</th>
+                <th width="20%">Rate (₹)</th>
+                <th width="20%">Total (₹)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1. Transport</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="transportQty" data-item="transport"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="transportRate" data-item="transport"></td>
+                <td><input type="number" class="form-control budget-total" id="transportTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>2. Executive Lunch/Dinner</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="lunchQty" data-item="lunch"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="lunchRate" data-item="lunch"></td>
+                <td><input type="number" class="form-control budget-total" id="lunchTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>3. Water Bottles</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="waterQty" data-item="water"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="waterRate" data-item="water"></td>
+                <td><input type="number" class="form-control budget-total" id="waterTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>4. Bouquet</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="bouquetQty" data-item="bouquet"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="bouquetRate" data-item="bouquet"></td>
+                <td><input type="number" class="form-control budget-total" id="bouquetTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>5. Gift/Memento</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="giftQty" data-item="gift"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="giftRate" data-item="gift"></td>
+                <td><input type="number" class="form-control budget-total" id="giftTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>6. Certificates</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="certQty" data-item="cert"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="certRate" data-item="cert"></td>
+                <td><input type="number" class="form-control budget-total" id="certTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>7. Medals</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="medalQty" data-item="medal"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="medalRate" data-item="medal"></td>
+                <td><input type="number" class="form-control budget-total" id="medalTotal" readonly></td>
+            </tr>
+            <tr>
+                <td>8. Others</td>
+                <td><input type="number" min="0" class="form-control budget-qty" id="otherQty" data-item="other"></td>
+                <td><input type="number" min="0" class="form-control budget-rate" id="otherRate" data-item="other"></td>
+                <td><input type="number" class="form-control budget-total" id="otherTotal" readonly></td>
+            </tr>
+            <tr class="grand-total-row">
+                <td colspan="3" class="text-end"><strong>GRAND TOTAL</strong></td>
+                <td><input type="number" class="form-control" id="grandTotal" readonly></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+                            <div class="form-section">
+                                <h5 class="form-section-header">SPOC Details [Should be different from Head/Co-Head]</h5>
+                                <table class="form-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name of the student</th>
+                                            <th>Mobile Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="text" class="form-control" id="spocName" required></td>
+                                            <td><input type="tel" class="form-control" id="spocMobile" required pattern="[0-9]{10}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h5 class="form-section-header">Declaration</h5>
+                                <p>We the below signed take the responsibility to conduct the program in the most discipline way and ensure to return of all the items at their respective places without any damages/impairment.</p>
+                                
+                                <table class="form-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Sl. No.</th>
+                                            <th>Name of the student</th>
+                                            <th>Mobile Number</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td><input type="text" class="form-control" id="headName" required></td>
+                                            <td><input type="tel" class="form-control" id="headMobile" required pattern="[0-9]{10}"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td><input type="text" class="form-control" id="coheadName" required></td>
+                                            <td><input type="tel" class="form-control" id="coheadMobile" required pattern="[0-9]{10}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" form="eventProposalForm" class="btn btn-primary">Submit Proposal</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Loading Spinner -->
+        <div class="position-fixed top-0 start-0 w-100 h-100 d-none" id="loadingSpinner">
+            <div class="w-100 h-100 bg-white opacity-75 d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+ <!-- Registration Link Modal - Updated -->
+<div class="modal fade" id="registrationLinkModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-link-45deg me-2"></i>Add Registration Link</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="registration-link-container">
+                    <div class="registration-link-header">
+                        <i class="bi bi-info-circle"></i>
+                        <h6>Registration Link Information</h6>
+                    </div>
+                    <p class="text-muted mb-0">Adding a registration link will allow participants to register for your event. You can set a deadline and maximum number of participants.</p>
+                </div>
+                
+                <form id="registrationLinkForm">
+                    <div class="registration-link-form">
+                        <div class="mb-3">
+                            <label for="registrationUrl" class="form-label">Registration URL</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-link"></i></span>
+                                <input type="url" class="form-control" id="registrationUrl" required placeholder="https://forms.google.com/...">
+                            </div>
+                            <div class="form-text">Provide a link to your registration form (Google Forms, Microsoft Forms, etc.)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="registrationDeadline" class="form-label">Registration Deadline</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                                <input type="datetime-local" class="form-control" id="registrationDeadline" required>
+                            </div>
+                            <div class="form-text">Set a deadline for registrations</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="maxParticipants" class="form-label">Maximum Participants</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-people"></i></span>
+                                <input type="number" class="form-control" id="maxParticipants" min="1" placeholder="Optional">
+                            </div>
+                            <div class="form-text">Leave empty for unlimited participants</div>
+                        </div>
+                    </div>
+                    
+                    <div class="registration-options">
+                        <div class="registration-option">
+                            <div class="registration-option-header">
+                                <i class="bi bi-bell"></i>
+                                <h6>Notifications</h6>
+                            </div>
+                            <p>Receive email notifications when someone registers</p>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="notificationsEnabled" checked>
+                                <label class="form-check-label" for="notificationsEnabled">Enable notifications</label>
+                            </div>
+                        </div>
+                        
+                        <div class="registration-option">
+                            <div class="registration-option-header">
+                                <i class="bi bi-shield-check"></i>
+                                <h6>Verification</h6>
+                            </div>
+                            <p>Require email verification for registrations</p>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" id="verificationEnabled">
+                                <label class="form-check-label" for="verificationEnabled">Enable verification</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveRegistrationLink()">
+                    <i class="bi bi-check-circle me-1"></i>Save Registration Link
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Registrations Modal -->
+<div class="modal fade" id="registrationsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="registrationsModalTitle">Event Registrations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Year</th>
+                                <th>Phone</th>
+                                <th>Registered At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="registrationsTableBody">
+                            <!-- Registrations will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="exportRegistrations()">
+                    <i class="bi bi-download me-1"></i>Export to CSV
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Gallery Modal -->
+<div class="modal fade" id="eventGalleryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Event Gallery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="galleryForm">
+                    <div class="mb-3">
+                        <label for="galleryEventSelect" class="form-label">Select Event</label>
+                        <select class="form-select" id="galleryEventSelect" required>
+                            <option value="" selected disabled>Select an event</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="galleryDriveLink" class="form-label">Google Drive Link</label>
+                        <input type="url" class="form-control" id="galleryDriveLink" required 
+                               placeholder="https://drive.google.com/...">
+                        <small class="text-muted">Please provide a shared Google Drive folder link with viewing access</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="galleryThumbnail" class="form-label">Thumbnail Image Link (Optional)</label>
+                        <input type="url" class="form-control" id="galleryThumbnail" 
+                               placeholder="https://...">
+                        <small class="text-muted">Direct link to a thumbnail image (optional)</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="galleryDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="galleryDescription" rows="3" 
+                                placeholder="Add a description for the gallery..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="uploadGalleryBtn">Add Gallery</button>
+            </div>
+        </div>
+    </div>
+</div>
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+        <script>
+            // Firebase Configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyC5Tc0paLSS9gxrWtOWKQL73RpxN3ycfPA",
+                authDomain: "event-management-system-44cec.firebaseapp.com",
+                projectId: "event-management-system-44cec",
+                storageBucket: "event-management-system-44cec.appspot.com",
+                messagingSenderId: "737978807381",
+                appId: "1:737978807381:web:ddab283404cdee111e90dc",
+                measurementId: "G-J4D9JJJF53"
+            };
+        
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+            document.getElementById('galleryLink').addEventListener('click', showGalleryModal);
+            // Global Variables
+            let calendar;
+            let currentUser = null;
+            let selectedDate = null;
+            let selectedTimeSlot = null;
+            const EXAM_WEEK = {
+    start: new Date('2025-04-01'),
+    end: new Date('2025-04-08')
+};
+ // Initialize AOS
+ document.addEventListener('DOMContentLoaded', function() {
+            AOS.init();
+        });
+        function renderEventContent(eventInfo) {
+            const status = eventInfo.event.extendedProps.status;
+            eventInfo.el.classList.add(`${status}-event`);
+        }
+        
+async function viewRegistrations(eventId) {
+    const modal = new bootstrap.Modal(document.getElementById('registrationsModal'));
+    document.getElementById('registrationsModalTitle').textContent = 'Loading registrations...';
+    document.getElementById('registrationsTableBody').innerHTML = '<tr><td colspan="6" class="text-center"><div class="spinner-border text-primary" role="status"></div></td></tr>';
+    
+    try {
+        // Get event details
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        const event = eventDoc.data();
+        document.getElementById('registrationsModalTitle').textContent = `Registrations for ${event.eventName}`;
+        
+        // Get registrations
+        const registrationsSnapshot = await db.collection('registrations')
+            .where('eventId', '==', eventId)
+            .orderBy('registeredAt', 'desc')
+            .get();
+            
+        const registrationsTable = document.getElementById('registrationsTableBody');
+        registrationsTable.innerHTML = '';
+        
+        if (registrationsSnapshot.empty) {
+            registrationsTable.innerHTML = '<tr><td colspan="6" class="text-center">No registrations found</td></tr>';
+        } else {
+            registrationsSnapshot.forEach(doc => {
+                const reg = doc.data();
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reg.studentId}</td>
+                    <td>${reg.studentEmail}</td>
+                    <td>${reg.department}</td>
+                    <td>Year ${reg.year}</td>
+                    <td>${reg.phone}</td>
+                    <td>${new Date(reg.registeredAt.toDate()).toLocaleString()}</td>
+                `;
+                registrationsTable.appendChild(row);
+            });
+        }
+        
+        modal.show();
+    } catch (error) {
+        console.error('Error loading registrations:', error);
+        document.getElementById('registrationsTableBody').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading registrations</td></tr>';
+        modal.show();
+    }
+}
+
+function exportRegistrations() {
+    const rows = Array.from(document.querySelectorAll('#registrationsTableBody tr'));
+    if (rows.length === 0) {
+        alert('No registrations to export');
+        return;
+    }
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    
+    // Add headers
+    const headers = Array.from(document.querySelectorAll('#registrationsTableBody thead th'))
+        .map(th => th.textContent);
+    csvContent += headers.join(",") + "\r\n";
+    
+    // Add data rows
+    rows.forEach(row => {
+        const cols = Array.from(row.querySelectorAll('td'))
+            .map(td => `"${td.textContent.replace(/"/g, '""')}"`);
+        csvContent += cols.join(",") + "\r\n";
+    });
+    
+    // Create download link
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "event_registrations.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+let currentEventForRegistration = null;
+
+function showRegistrationLinkModal(eventId) {
+    currentEventForRegistration = eventId;
+    const modal = new bootstrap.Modal(document.getElementById('registrationLinkModal'));
+    modal.show();
+}
+
+async function saveRegistrationLink() {
+    const url = document.getElementById('registrationUrl').value;
+    const deadline = document.getElementById('registrationDeadline').value;
+    const maxParticipants = document.getElementById('maxParticipants').value || null;
+
+    if (!url || !deadline) {
+        showAlert('Please fill all required fields', 'warning');
+        return;
+    }
+
+    showLoading();
+    try {
+        await db.collection('events').doc(currentEventForRegistration).update({
+            registration: {
+                url: url,
+                deadline: deadline,
+                maxParticipants: maxParticipants,
+                addedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }
+        });
+
+        showAlert('Registration link added successfully!', 'success');
+        bootstrap.Modal.getInstance(document.getElementById('registrationLinkModal')).hide();
+        calendar.refetchEvents();
+    } catch (error) {
+        console.error('Error saving registration link:', error);
+        showAlert('Error saving registration link', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+// Budget calculation functions
+function setupBudgetCalculations() {
+    const budgetItems = [
+        'transport', 'lunch', 'water', 'bouquet', 
+        'gift', 'cert', 'medal', 'other'
+    ];
+
+    budgetItems.forEach(item => {
+        const qtyInput = document.getElementById(`${item}Qty`);
+        const rateInput = document.getElementById(`${item}Rate`);
+        
+        qtyInput.addEventListener('input', () => calculateItemTotal(item));
+        rateInput.addEventListener('input', () => calculateItemTotal(item));
+    });
+}
+
+function calculateItemTotal(item) {
+    const qty = parseFloat(document.getElementById(`${item}Qty`).value) || 0;
+    const rate = parseFloat(document.getElementById(`${item}Rate`).value) || 0;
+    const total = qty * rate;
+    
+    document.getElementById(`${item}Total`).value = total.toFixed(2);
+    calculateGrandTotal();
+}
+
+function calculateGrandTotal() {
+    const budgetItems = [
+        'transport', 'lunch', 'water', 'bouquet', 
+        'gift', 'cert', 'medal', 'other'
+    ];
+
+    const grandTotal = budgetItems.reduce((sum, item) => {
+        const total = parseFloat(document.getElementById(`${item}Total`).value) || 0;
+        return sum + total;
+    }, 0);
+
+    document.getElementById('grandTotal').value = grandTotal.toFixed(2);
+}
+
+// Add this to your event form submission handler
+document.getElementById('eventProposalForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showLoading();
+
+    try {
+        const budgetItems = [
+            'transport', 'lunch', 'water', 'bouquet', 
+            'gift', 'cert', 'medal', 'other'
+        ];
+
+        const budgetDetails = {};
+        let grandTotal = 0;
+
+        budgetItems.forEach(item => {
+            const qty = parseFloat(document.getElementById(`${item}Qty`).value) || 0;
+            const rate = parseFloat(document.getElementById(`${item}Rate`).value) || 0;
+            const total = qty * rate;
+
+            budgetDetails[item] = {
+                quantity: qty,
+                rate: rate,
+                total: total
+            };
+
+            grandTotal += total;
+        });
+
+        const eventData = {
+            // ... your existing event data ...
+            budget: {
+                items: budgetDetails,
+                grandTotal: grandTotal
+            }
+        };
+
+        // Add the event to Firestore
+        await db.collection('events').add(eventData);
+
+        showAlert('Event proposal submitted successfully!', 'success');
+        bootstrap.Modal.getInstance(document.getElementById('newEventModal')).hide();
+        calendar.refetchEvents();
+        
+    } catch (error) {
+        console.error('Error submitting proposal:', error);
+        showAlert(`Error submitting proposal: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
+});
+
+// Initialize budget calculations when modal is shown
+document.getElementById('newEventModal').addEventListener('shown.bs.modal', () => {
+    setupBudgetCalculations();
+});
+// Add these event listeners for navigation
+document.getElementById('myEventsLink').addEventListener('click', showMyEvents);
+document.getElementById('proposalsLink').addEventListener('click', showProposals);
+
+// Function to show approved events
+async function showMyEvents() {
+    const mainContent = document.querySelector('.container.my-4');
+    showLoading();
+
+    try {
+        const eventsSnapshot = await db.collection('events')
+            .where('createdBy', '==', currentUser.email)
+            .where('status', '==', 'approved')
+            .orderBy('date', 'desc')
+            .get();
+
+        // Get all event IDs to fetch registration counts
+        const eventIds = eventsSnapshot.docs.map(doc => doc.id);
+        
+        // Create a map to store registration counts
+        const registrationCounts = {};
+        
+        // If there are events, fetch their registration counts
+        if (eventIds.length > 0) {
+            // Get registration counts for all events
+            const registrationsPromises = eventIds.map(async (eventId) => {
+                const registrationsSnapshot = await db.collection('registrations')
+                    .where('eventId', '==', eventId)
+                    .get();
+                
+                registrationCounts[eventId] = registrationsSnapshot.size;
+            });
+            
+            // Wait for all registration count queries to complete
+            await Promise.all(registrationsPromises);
+        }
+
+        let html = `
+            <div class="row" data-aos="fade-up" data-aos-duration="800">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0 text-white">My Approved Events</h5>
+                        </div>
+                        <div class="card-body p-4">
+            `;
+
+        if (eventsSnapshot.empty) {
+            html += `
+                <div class="empty-state">
+                    <i class="bi bi-calendar-x"></i>
+                    <h5>No Approved Events</h5>
+                    <p>You don't have any approved events yet. Once your event proposals are approved, they will appear here.</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newEventModal">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Event
+                    </button>
+                </div>
+            `;
+        } else {
+            html += `<div class="events-container">`;
+            eventsSnapshot.forEach(doc => {
+                const event = doc.data();
+                const eventId = doc.id;
+                const eventDate = new Date(event.date);
+                const formattedDate = eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+                
+                // Get registration count for this event
+                const registrationCount = registrationCounts[eventId] || 0;
+                
+                // Calculate registration progress if available
+                let registrationProgress = '';
+                if (event.registration && event.registration.maxParticipants) {
+                    const registrationDeadline = new Date(event.registration.deadline);
+                    const now = new Date();
+                    const isRegistrationOpen = now < registrationDeadline;
+                    
+                    // Calculate progress percentage
+                    const maxParticipants = parseInt(event.registration.maxParticipants);
+                    const progressPercentage = maxParticipants > 0 ? 
+                        Math.min(Math.round((registrationCount / maxParticipants) * 100), 100) : 0;
+                    
+                    registrationProgress = `
+                        <div class="registration-info">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="mb-1"><strong>Registration:</strong> ${isRegistrationOpen ? '<span class="text-success">Open</span>' : '<span class="text-danger">Closed</span>'}</p>
+                                <p class="mb-1"><strong>Deadline:</strong> ${new Date(event.registration.deadline).toLocaleDateString()}</p>
+                            </div>
+                            ${event.registration.maxParticipants ? `
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small>${registrationCount} registered</small>
+                                    <small>${event.registration.maxParticipants} max</small>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: ${progressPercentage}%" 
+                                        aria-valuenow="${progressPercentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                html += `
+                    <div class="event-card">
+                        <div class="card-header">
+                            <span>${event.clubName || 'Your Club'}</span>
+                            <span class="event-date">${formattedDate}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${event.eventName}</h5>
+                            <span class="badge bg-success mb-2">Approved</span>
+                            
+                            <div class="event-meta">
+                                <div class="event-meta-item">
+                                    <i class="bi bi-clock"></i> ${formatTime(event.startTime)} - ${formatTime(event.endTime)}
+                                </div>
+                                <div class="event-meta-item">
+                                    <i class="bi bi-geo-alt"></i> ${event.venue}
+                                </div>
+                            </div>
+                            
+                            <p class="card-text">${event.eventDetails ? (event.eventDetails.length > 100 ? event.eventDetails.substring(0, 100) + '...' : event.eventDetails) : 'No description available.'}</p>
+                            
+                            ${registrationProgress}
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary" onclick="showEventDetails('${doc.id}')">
+                                    <i class="bi bi-info-circle me-1"></i>Details
+                                </button>
+                                
+                                ${!event.registration ? `
+                                    <button class="btn btn-outline-success" onclick="showRegistrationLinkModal('${doc.id}')">
+                                        <i class="bi bi-link-45deg me-1"></i>Add Registration
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-outline-info" onclick="viewRegistrations('${doc.id}')">
+                                        <i class="bi bi-people me-1"></i>View Registrations (${registrationCount})
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        html += `
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        mainContent.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading approved events:', error);
+        showAlert('Error loading approved events', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+// Update the event form submission handler to include resource mapping
+async function submitEventForm(event) {
+    event.preventDefault();
+    showLoading();
+    
+    try {
+        // Get form data
+        const form = document.getElementById('eventForm');
+        const formData = new FormData(form);
+        
+        // Basic event data
+        const eventData = {
+            eventName: formData.get('eventName'),
+            clubName: formData.get('clubName'),
+            date: formData.get('eventDate'),
+            startTime: formData.get('startTime'),
+            endTime: formData.get('endTime'),
+            venue: formData.get('venue'),
+            eventDetails: formData.get('eventDetails'),
+            createdBy: currentUser.email,
+            submissionDate: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'pending',
+            currentApprovalLevel: 1,
+            approvalHistory: []
+        };
+        
+        // Get selected resources
+        const selectedResources = Array.from(form.querySelectorAll('input[name="resources"]:checked'))
+            .map(checkbox => checkbox.value);
+        
+        // Get other resources if specified
+        const otherResources = formData.get('otherResources');
+        if (otherResources) {
+            selectedResources.push(otherResources);
+            
+            // Check if tea and snacks is mentioned
+            if (otherResources.toLowerCase().includes('tea') || 
+                otherResources.toLowerCase().includes('snack')) {
+                selectedResources.push('Tea and Snacks');
+            }
+        }
+        
+        // Add resources to event data
+        eventData.resources = selectedResources;
+        
+        // Get required authorities based on selected resources
+        const requiredAuthorities = getResourceAuthorities(selectedResources);
+        eventData.requiredAuthorities = requiredAuthorities;
+        
+        // Add SPOC information
+        eventData.spoc = {
+            name: formData.get('spocName'),
+            mobile: formData.get('spocMobile')
+        };
+        
+        // Add organizers information
+        eventData.organizers = {
+            head: { name: formData.get('headName') },
+            cohead: { name: formData.get('coheadName') }
+        };
+        
+        // Add budget if provided
+        if (formData.get('hasBudget') === 'yes') {
+            const budgetItems = {};
+            const budgetRows = document.querySelectorAll('.budget-row');
+            let grandTotal = 0;
+            
+            budgetRows.forEach((row, index) => {
+                const item = row.querySelector('.budget-item').value;
+                const quantity = parseInt(row.querySelector('.budget-quantity').value);
+                const rate = parseInt(row.querySelector('.budget-rate').value);
+                const total = quantity * rate;
+                
+                budgetItems[item] = {
+                    quantity,
+                    rate,
+                    total
+                };
+                
+                grandTotal += total;
+            });
+            
+            eventData.budget = {
+                items: budgetItems,
+                grandTotal
+            };
+        }
+        
+        // Add services if provided
+        const services = [];
+        if (formData.get('requiresServices') === 'yes') {
+            const serviceInputs = document.querySelectorAll('.service-input');
+            serviceInputs.forEach(input => {
+                if (input.value.trim()) {
+                    services.push(input.value.trim());
+                }
+            });
+        }
+        eventData.services = services;
+        
+        // Save to Firestore
+        const docRef = await db.collection('events').add(eventData);
+        
+        // Show success message
+        showAlert('Event proposal submitted successfully!', 'success');
+        
+        // Close modal and reset form
+        const modal = bootstrap.Modal.getInstance(document.getElementById('newEventModal'));
+        modal.hide();
+        form.reset();
+        
+        // Refresh calendar
+        calendar.refetchEvents();
+        
+    } catch (error) {
+        console.error('Error submitting event:', error);
+        showAlert('Error submitting event: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+// Function to show event details
+// Function to show event details
+async function showEventDetails(eventId) {
+    showLoading();
+    try {
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Event not found');
+        }
+
+        const event = eventDoc.data();
+        const approvalHistory = event.approvalHistory || [];
+        const currentLevel = event.currentApprovalLevel;
+
+        // Get current authority email based on level
+        const authorityEmails = {
+            1: 'clubhead@gmail.com',
+            2: 'facultymentor@gmail.com',
+            3: 'president@gmail.com',
+            4: 'hod@gmail.com',
+            5: 'rector@gmail.com',
+            6: 'purchase@gmail.com',
+            7: 'accounts@gmail.com',
+            8: 'admin@gmail.com',
+            9: 'registrar@gmail.com',
+            10: 'director@gmail.com'
+        };
+
+        // Create reminder button if event is pending and user is the creator
+        const reminderButton = (event.status === 'pending' && event.createdBy === currentUser.email) ? `
+            <button type="button" class="btn btn-warning" onclick="sendReminderEmail('${eventId}', '${authorityEmails[currentLevel]}', '${event.eventName}', '${getApprovalLevelName(currentLevel)}')">
+                <i class="bi bi-bell me-2"></i>Send Reminder
+            </button>
+        ` : '';
+        
+        // Add PDF download button if event is approved
+        const pdfButton = (event.status === 'approved') ? `
+            <button type="button" class="btn btn-success" onclick="generateEventPDF('${eventId}')">
+                <i class="bi bi-file-earmark-pdf me-2"></i>Download Proposal PDF
+            </button>
+        ` : '';
+
+        // Create modal HTML
+        const modalHtml = `
+            <div class="modal fade" id="eventDetailsModal" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${event.eventName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="event-details">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <p><strong>Date:</strong> ${formatDate(event.date)}</p>
+                                        <p><strong>Time:</strong> ${formatTime(event.startTime)} - ${formatTime(event.endTime)}</p>
+                                        <p><strong>Venue:</strong> ${event.venue}</p>
+                                        <p><strong>Club:</strong> ${event.clubName}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Status:</strong> <span class="badge bg-${getStatusBadgeColor(event.status)}">${event.status}</span></p>
+                                        <p><strong>Submitted on:</strong> ${formatDate(event.submissionDate)}</p>
+                                        ${event.currentApprovalLevel ? `
+                                            <p><strong>Current Level:</strong> ${getApprovalLevelName(event.currentApprovalLevel)}</p>
+                                        ` : ''}
+                                    </div>
+                                </div>
+
+                                ${event.status === 'pending' ? `
+                                    <div class="alert alert-info mb-4">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">Current Approval Status</h6>
+                                                <p class="mb-0">Waiting for approval from: ${getApprovalLevelName(currentLevel)}</p>
+                                            </div>
+                                            ${reminderButton}
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <h6>Approval Progress</h6>
+                                        <div class="progress mb-3" style="height: 20px;">
+                                            <div class="progress-bar" role="progressbar" 
+                                                 style="width: ${(currentLevel/10)*100}%" 
+                                                 aria-valuenow="${currentLevel}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="10">
+                                                Level ${currentLevel}/10
+                                            </div>
+                                        </div>
+                                    </div>
+                                ` : ''}
+
+                                <div class="mb-4">
+                                    <h6>Event Details</h6>
+                                    <p>${event.eventDetails || 'No details provided'}</p>
+                                </div>
+
+                                ${event.services && event.services.length > 0 ? `
+                                    <div class="mb-4">
+                                        <h6>Service Requirements</h6>
+                                        <ul class="list-unstyled">
+                                            ${event.services.map(service => `
+                                                <li><i class="bi bi-check2 text-success me-2"></i>${service}</li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+
+                                ${event.budget ? `
+                                    <div class="mb-4">
+                                        <h6>Budget Details</h6>
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Quantity</th>
+                                                    <th>Rate (₹)</th>
+                                                    <th>Total (₹)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${Object.entries(event.budget.items).map(([item, details]) => `
+                                                    <tr>
+                                                        <td>${item}</td>
+                                                        <td>${details.quantity}</td>
+                                                        <td>${details.rate}</td>
+                                                        <td>${details.total}</td>
+                                                    </tr>
+                                                `).join('')}
+                                                <tr class="table-info">
+                                                    <td colspan="3" class="text-end"><strong>Grand Total</strong></td>
+                                                    <td><strong>₹${event.budget.grandTotal}</strong></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ` : ''}
+
+                                <div class="mb-4">
+                                    <h6>Contact Information</h6>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>SPOC:</strong> ${event.spoc?.name || 'N/A'}</p>
+                                            <p><strong>Mobile:</strong> ${event.spoc?.mobile || 'N/A'}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Head:</strong> ${event.organizers?.head?.name || 'N/A'}</p>
+                                            <p><strong>Co-Head:</strong> ${event.organizers?.cohead?.name || 'N/A'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            // In the showEventDetails function, update the approval timeline section
+                                <div class="mb-4">
+                                    <h6>Approval Timeline</h6>
+                                    <div class="approval-timeline">
+                                        ${[1,2,3,4,5,6,7,8,9,10].map(level => {
+                                            const approved = approvalHistory.find(a => a.level === level);
+                                            return `
+                                                <div class="approval-step ${approved ? (approved.status === 'approved' ? 'approved' : approved.status) : (level === currentLevel ? 'current' : '')}">
+                                                    <div class="approval-step-content">
+                                                        <strong>${getApprovalLevelName(level)}</strong>
+                                                        ${approved ? `
+                                                            <p class="mb-1">${approved.status.toUpperCase()} - ${approved.remarks || 'No remarks'}</p>
+                                                            <small class="text-muted">${formatDate(approved.approvedAt)}</small>
+                                                        ` : level === currentLevel ? `
+                                                            <p class="mb-1 text-warning">Pending Approval</p>
+                                                        ` : level < currentLevel ? `
+                                                            <p class="mb-1 text-success">Approved</p>
+                                                        
+                                                        ` : `
+                                                            <p class="mb-1 text-muted">Not Yet Reached</p>
+                                                        `}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            ${pdfButton}
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            ${event.createdBy === currentUser.email && event.status === 'pending' ? `
+                                <button type="button" class="btn btn-danger" onclick="deleteEvent('${eventId}')">Delete</button>
+                                <button type="button" class="btn btn-primary" onclick="editEvent('${eventId}')">Edit</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Remove existing modal if any
+        const existingModal = document.getElementById('eventDetailsModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Add new modal to body
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Show the modal
+        const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+        modal.show();
+
+    } catch (error) {
+        console.error('Error showing event details:', error);
+        showAlert('Error loading event details', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+// Function to generate PDF for approved event
+// Update the generateEventPDF function to include all form fields
+async function generateEventPDF(eventId) {
+    showLoading();
+    try {
+        // Check if jsPDF is loaded
+        if (typeof jspdf === 'undefined') {
+            // Load jsPDF and html2canvas dynamically if not already loaded
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+        }
+        
+        const { jsPDF } = window.jspdf;
+        
+        // Get event data
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Event not found');
+        }
+        
+        const event = eventDoc.data();
+        const approvalHistory = event.approvalHistory || [];
+        
+        // Create a new PDF document
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4'
+        });
+        
+        // Add college logo and header
+        // doc.addImage('path/to/logo.png', 'PNG', 10, 10, 30, 30);
+        
+        // Set font styles
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.setTextColor(0, 0, 128);
+        
+        // Add title
+        doc.text('EVENT PROPOSAL FORM', 105, 20, { align: 'center' });
+        
+        // Add college name
+        doc.setFontSize(14);
+        doc.text('COLLEGE NAME', 105, 30, { align: 'center' });
+        
+        // Reset font for content
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        
+        // Add event details
+        let y = 50;
+        
+        // Event basic info section
+        doc.setFont('helvetica', 'bold');
+        doc.setFillColor(230, 230, 230);
+        doc.rect(10, y, 190, 10, 'F');
+        doc.text('EVENT DETAILS', 15, y + 7);
+        y += 15;
+        
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Event Name: ${event.eventName}`, 15, y);
+        y += 10;
+        
+        doc.text(`Club/Committee: ${event.clubName}`, 15, y);
+        y += 10;
+        
+        doc.text(`Date: ${formatDate(event.date)}`, 15, y);
+        doc.text(`Time: ${formatTime(event.startTime)} - ${formatTime(event.endTime)}`, 110, y);
+        y += 10;
+        
+        doc.text(`Venue: ${event.venue}`, 15, y);
+        y += 15;
+        
+        // Add classes to be preponed if available
+        if (event.classesToPrepone && event.classesToPrepone.length > 0) {
+            doc.text(`Classes to be Preponed: ${event.classesToPrepone.join(', ')}`, 15, y);
+            y += 10;
+        }
+        
+        // Add target audience if available
+        if (event.targetAudience) {
+            doc.text(`Target Audience: ${event.targetAudience}`, 15, y);
+            y += 10;
+        }
+        
+        // Add expected attendance if available
+        if (event.expectedAttendance) {
+            doc.text(`Expected Attendance: ${event.expectedAttendance}`, 15, y);
+            y += 10;
+        }
+        
+        // Add any other custom fields
+        if (event.customFields) {
+            Object.entries(event.customFields).forEach(([key, value]) => {
+                if (value) {
+                    const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    doc.text(`${formattedKey}: ${value}`, 15, y);
+                    y += 10;
+                }
+            });
+        }
+        
+        y += 5; // Add some space
+        
+        // Event description
+        doc.setFont('helvetica', 'bold');
+        doc.setFillColor(230, 230, 230);
+        doc.rect(10, y, 190, 10, 'F');
+        doc.text('EVENT DESCRIPTION', 15, y + 7);
+        y += 15;
+        
+        doc.setFont('helvetica', 'normal');
+        
+        // Handle multiline text for event details
+        const splitDetails = doc.splitTextToSize(event.eventDetails || 'No details provided', 180);
+        doc.text(splitDetails, 15, y);
+        y += splitDetails.length * 7 + 10;
+        
+        // Add service requirements if available
+        if (event.services && event.services.length > 0) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFillColor(230, 230, 230);
+            doc.rect(10, y, 190, 10, 'F');
+            doc.text('SERVICE REQUIREMENTS', 15, y + 7);
+            y += 15;
+            
+            doc.setFont('helvetica', 'normal');
+            event.services.forEach(service => {
+                doc.text(`• ${service}`, 15, y);
+                y += 7;
+            });
+            
+            y += 8; // Add some space
+        }
+        
+        // Budget section if available
+        if (event.budget) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFillColor(230, 230, 230);
+            doc.rect(10, y, 190, 10, 'F');
+            doc.text('BUDGET DETAILS', 15, y + 7);
+            y += 15;
+            
+            doc.setFont('helvetica', 'normal');
+            
+            // Create budget table
+            doc.setLineWidth(0.1);
+            doc.line(15, y, 195, y); // Top line
+            y += 7;
+            
+            // Table header
+            doc.setFont('helvetica', 'bold');
+            doc.text('Item', 20, y);
+            doc.text('Quantity', 80, y);
+            doc.text('Rate (₹)', 120, y);
+            doc.text('Total (₹)', 160, y);
+            y += 7;
+            
+            doc.line(15, y, 195, y); // Header separator
+            y += 5;
+            
+            // Table rows
+            doc.setFont('helvetica', 'normal');
+            Object.entries(event.budget.items).forEach(([item, details]) => {
+                doc.text(item, 20, y);
+                doc.text(details.quantity.toString(), 80, y);
+                doc.text(details.rate.toString(), 120, y);
+                doc.text(details.total.toString(), 160, y);
+                y += 10;
+            });
+            
+            doc.line(15, y, 195, y); // Bottom line
+            y += 7;
+            
+            // Grand total
+            doc.setFont('helvetica', 'bold');
+            doc.text('Grand Total:', 120, y);
+            doc.text(`₹${event.budget.grandTotal}`, 160, y);
+            y += 15;
+        }
+        
+        // Check if we need a new page
+        if (y > 250) {
+            doc.addPage();
+            y = 20;
+        }
+        
+        // Contact information
+        doc.setFont('helvetica', 'bold');
+        doc.setFillColor(230, 230, 230);
+        doc.rect(10, y, 190, 10, 'F');
+        doc.text('CONTACT INFORMATION', 15, y + 7);
+        y += 15;
+        
+        doc.setFont('helvetica', 'normal');
+        if (event.spoc) {
+            doc.text(`SPOC: ${event.spoc.name || 'N/A'}`, 15, y);
+            doc.text(`Mobile: ${event.spoc.mobile || 'N/A'}`, 110, y);
+            y += 10;
+        }
+        
+        if (event.organizers) {
+            if (event.organizers.head) {
+                doc.text(`Head: ${event.organizers.head.name || 'N/A'}`, 15, y);
+                y += 10;
+            }
+            
+            if (event.organizers.cohead) {
+                doc.text(`Co-Head: ${event.organizers.cohead.name || 'N/A'}`, 15, y);
+                y += 15;
+            }
+        }
+        
+        // Add a new page for approval details
+        doc.addPage();
+        y = 20;
+        
+        // Approval section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.text('APPROVAL DETAILS', 105, y, { align: 'center' });
+        y += 15;
+        
+        doc.setFontSize(12);
+        doc.setFillColor(230, 230, 230);
+        doc.rect(10, y, 190, 10, 'F');
+        doc.text('APPROVAL TIMELINE', 15, y + 7);
+        y += 20;
+        
+        // Create approval table
+        doc.setLineWidth(0.1);
+        doc.line(15, y, 195, y); // Top line
+        y += 7;
+        
+        // Table header
+        doc.setFont('helvetica', 'bold');
+        doc.text('Authority', 20, y);
+        doc.text('Status', 80, y);
+        doc.text('Remarks', 120, y);
+        doc.text('Date', 170, y);
+        y += 7;
+        
+        doc.line(15, y, 195, y); // Header separator
+        y += 5;
+        
+        // Table rows for approval history
+        doc.setFont('helvetica', 'normal');
+        
+        // Sort approval history by level
+        const sortedHistory = [...approvalHistory].sort((a, b) => a.level - b.level);
+        
+        // For each level, show approval status
+        for (let level = 1; level <= 10; level++) {
+            const approved = sortedHistory.find(a => a.level === level);
+            const authorityName = getApprovalLevelName(level);
+            
+            let status, remarks, date;
+            
+            if (approved) {
+                // Explicit approval record exists
+                status = approved.status.charAt(0).toUpperCase() + approved.status.slice(1);
+                remarks = approved.remarks || 'No remarks';
+                date = formatDate(approved.approvedAt);
+            } else if (level < event.currentApprovalLevel && event.status === 'approved') {
+                // Auto-approved (level is passed but no explicit record)
+                status = 'Approved';
+                remarks = 'Auto-approved';
+                date = 'N/A';
+            } else if (level === event.currentApprovalLevel && event.status === 'pending') {
+                // Current pending level
+                status = 'Pending';
+                remarks = 'Awaiting approval';
+                date = 'N/A';
+            } else {
+                // Not yet reached
+                status = 'Not Reached';
+                remarks = 'N/A';
+                date = 'N/A';
+            }
+            
+            // Check if we need a new page
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+                
+                // Redraw table header on new page
+                doc.setFont('helvetica', 'bold');
+                doc.line(15, y, 195, y); // Top line
+                y += 7;
+                
+                doc.text('Authority', 20, y);
+                doc.text('Status', 80, y);
+                doc.text('Remarks', 120, y);
+                doc.text('Date', 170, y);
+                y += 7;
+                
+                doc.line(15, y, 195, y); // Header separator
+                y += 5;
+                
+                doc.setFont('helvetica', 'normal');
+            }
+            
+            doc.text(authorityName, 20, y);
+            doc.text(status, 80, y);
+            
+            // Handle multiline remarks
+            const splitRemarks = doc.splitTextToSize(remarks, 50);
+            doc.text(splitRemarks, 120, y);
+            
+            doc.text(date, 170, y);
+            
+            // Adjust y position based on remarks length
+            y += Math.max(10, splitRemarks.length * 7);
+        }
+        
+        doc.line(15, y, 195, y); // Bottom line
+        y += 20;
+        
+        // Add signature sections
+        doc.setFont('helvetica', 'bold');
+        doc.text('Signatures:', 15, y);
+        y += 15;
+        
+        // Create signature boxes
+        const signatureWidth = 60;
+        const signatureHeight = 25;
+        const gap = 5;
+        
+        // First row of signatures
+        doc.rect(15, y, signatureWidth, signatureHeight);
+        doc.text('Club Head', 15 + signatureWidth/2, y + signatureHeight + 5, { align: 'center' });
+        
+        doc.rect(15 + signatureWidth + gap, y, signatureWidth, signatureHeight);
+        doc.text('Faculty Mentor', 15 + signatureWidth + gap + signatureWidth/2, y + signatureHeight + 5, { align: 'center' });
+        
+        doc.rect(15 + 2 * (signatureWidth + gap), y, signatureWidth, signatureHeight);
+        doc.text('Director', 15 + 2 * (signatureWidth + gap) + signatureWidth/2, y + signatureHeight + 5, { align: 'center' });
+        
+        // Add footer
+        const pageCount = doc.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(10);
+            doc.setTextColor(150);
+            doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
+            doc.text(`Generated on ${new Date().toLocaleDateString()}`, 105, 295, { align: 'center' });
+        }
+        
+        // Save the PDF
+        doc.save(`${event.eventName.replace(/\s+/g, '_')}_Proposal.pdf`);
+        
+        showAlert('PDF generated successfully!', 'success');
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        showAlert('Error generating PDF: ' + error.message, 'error');
+    } finally {
+        hideLoading();
+    }
+}
+// Helper function to load external scripts
+function loadScript(url) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+// Function to show proposals with approval timeline
+async function showProposals() {
+    const mainContent = document.querySelector('.container.my-4');
+    showLoading();
+
+    try {
+        const proposalsSnapshot = await db.collection('events')
+            .where('createdBy', '==', currentUser.email)
+            .where('status', 'in', ['pending', 'conditional'])
+            .orderBy('submissionDate', 'desc')
+            .get();
+
+        let html = `
+            <div class="row" data-aos="fade-up" data-aos-duration="800">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header py-3">
+                            <h5 class="mb-0 text-white">My Event Proposals</h5>
+                        </div>
+                        <div class="card-body p-4">
+        `;
+
+        if (proposalsSnapshot.empty) {
+            html += `
+                <div class="empty-state">
+                    <i class="bi bi-clipboard-x"></i>
+                    <h5>No Pending Proposals</h5>
+                    <p>You don't have any pending event proposals. Create a new event proposal to get started.</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newEventModal">
+                        <i class="bi bi-plus-circle me-2"></i>Create New Event
+                    </button>
+                </div>
+            `;
+        } else {
+            html += `<div class="events-container">`;
+            proposalsSnapshot.forEach(doc => {
+                const proposal = doc.data();
+                const approvalHistory = proposal.approvalHistory || [];
+                const currentLevel = proposal.currentApprovalLevel;
+                const approvalProgress = (currentLevel / 10) * 100;
+                const eventDate = new Date(proposal.date);
+                const formattedDate = eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+                
+                // Fix for the submissionDate error - handle different date formats
+                let formattedSubmissionDate = 'Unknown date';
+                if (proposal.submissionDate) {
+                    try {
+                        // Check if it's a Firestore timestamp
+                        if (proposal.submissionDate.toDate && typeof proposal.submissionDate.toDate === 'function') {
+                            formattedSubmissionDate = new Date(proposal.submissionDate.toDate()).toLocaleDateString('en-US', { 
+                                month: 'long', day: 'numeric', year: 'numeric' 
+                            });
+                        } 
+                        // Check if it's a Date object or timestamp number
+                        else {
+                            formattedSubmissionDate = new Date(proposal.submissionDate).toLocaleDateString('en-US', { 
+                                month: 'long', day: 'numeric', year: 'numeric' 
+                            });
+                        }
+                    } catch (e) {
+                        console.warn('Error formatting submission date:', e);
+                    }
+                }
+
+                // Get the latest approval or rejection
+                const latestAction = approvalHistory.length > 0 ? 
+                    approvalHistory[approvalHistory.length - 1] : null;
+                
+                html += `
+                    <div class="event-card">
+                        <div class="card-header">
+                            <span>${proposal.clubName || 'Your Club'}</span>
+                            <span class="event-date">${formattedDate}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">${proposal.eventName}</h5>
+                            <div class="mb-2">
+                                <span class="badge bg-${getStatusBadgeColor(proposal.status)}">${proposal.status}</span>
+                                <small class="text-muted ms-2">Submitted on ${formattedSubmissionDate}</small>
+                            </div>
+                            
+                            <div class="event-meta">
+                                <div class="event-meta-item">
+                                    <i class="bi bi-clock"></i> ${formatTime(proposal.startTime)} - ${formatTime(proposal.endTime)}
+                                </div>
+                                <div class="event-meta-item">
+                                    <i class="bi bi-geo-alt"></i> ${proposal.venue}
+                                </div>
+                            </div>
+                            
+                            <p class="card-text">${proposal.eventDetails ? (proposal.eventDetails.length > 100 ? proposal.eventDetails.substring(0, 100) + '...' : proposal.eventDetails) : 'No description available.'}</p>
+                            
+                            <div class="approval-info mt-3">
+                                <h6 class="mb-2">Approval Progress</h6>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small>Level ${currentLevel}</small>
+                                    <small>Level 10</small>
+                                </div>
+                                <div class="progress mb-2" style="height: 8px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                        style="width: ${approvalProgress}%" 
+                                        aria-valuenow="${approvalProgress}" 
+                                        aria-valuemin="0" 
+                                        aria-valuemax="100">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">Current: ${getApprovalLevelName(currentLevel)}</small>
+                                    ${latestAction ? `
+                                        <small class="text-${latestAction.status === 'approved' ? 'success' : 'danger'}">
+                                            Last action: ${latestAction.status} by ${latestAction.role}
+                                        </small>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            
+                            ${proposal.status === 'conditional' && proposal.conditionalRemarks ? `
+                                <div class="alert alert-info mt-3 mb-0">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Conditional Approval:</strong> ${proposal.conditionalRemarks}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary" onclick="showEventDetails('${doc.id}')">
+                                    <i class="bi bi-info-circle me-1"></i>View Details
+                                </button>
+                                
+                                <button class="btn btn-outline-warning" onclick="sendReminderEmail('${doc.id}', '${getAuthorityEmail(currentLevel)}', '${proposal.eventName}', '${getApprovalLevelName(currentLevel)}')">
+                                    <i class="bi bi-bell me-1"></i>Send Reminder
+                                </button>
+                                
+                                ${proposal.status === 'pending' ? `
+                                    <button class="btn btn-outline-danger" onclick="deleteEvent('${doc.id}')">
+                                        <i class="bi bi-trash me-1"></i>Delete
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        html += `
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        mainContent.innerHTML = html;
+    } catch (error) {
+        console.error('Error loading proposals:', error);
+        showAlert('Error loading proposals', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+function getAuthorityEmail(level) {
+    const authorityEmails = {
+        1: 'clubhead@gmail.com',
+        2: 'facultymentor@gmail.com',
+        3: 'president@gmail.com',
+        4: 'hod@gmail.com',
+        5: 'rector@gmail.com',
+        6: 'purchase@gmail.com',
+        7: 'accounts@gmail.com',
+        8: 'admin@gmail.com',
+        9: 'registrar@gmail.com',
+        10: 'director@gmail.com'
+    };
+    return authorityEmails[level] || '';
+}
+// Helper function to get approval level name
+function getApprovalLevelName(level) {
+    const levels = {
+        1: 'Club Head',
+        2: 'Faculty Mentor',
+        3: 'President/Vice President',
+        4: 'HOD',
+        5: 'Rector',
+        6: 'Purchase Officer',
+        7: 'Accounts Officer',
+        8: 'Administration Officer',
+        9: 'Deputy Registrar',
+        10: 'Director'
+    };
+    return levels[level] || 'Unknown';
+}
+function sendReminderEmail(eventId, authorityEmail, eventName, authorityRole) {
+    const subject = `Reminder: Pending Approval for Event - ${eventName}`;
+    const body = `
+Dear ${authorityRole},
+
+This is a gentle reminder regarding the pending approval for the event "${eventName}".
+
+The event is currently awaiting your approval. Your prompt attention to this matter would be greatly appreciated.
+
+You can review the event details and provide your approval through the Event Management System.
+
+Best Regards,
+${currentUser.email}
+    `;
+
+    // Create mailto link
+    const mailtoLink = `mailto:${authorityEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open default email client
+    window.location.href = mailtoLink;
+}
+// Helper function to get status badge color
+function getStatusBadgeColor(status) {
+    switch (status) {
+        case 'approved': return 'success';
+        case 'pending': return 'warning';
+        case 'rejected': return 'danger';
+        case 'conditional': return 'info';
+        default: return 'secondary';
+    }
+}
+// Add this helper function
+function isExamWeek(date) {
+    const checkDate = new Date(date);
+    return checkDate >= EXAM_WEEK.start && checkDate <= EXAM_WEEK.end;
+}
+            // Constants
+            const TIME_SLOTS = [
+                { start: '09:00', end: '11:00' },
+                { start: '11:00', end: '13:00' },
+                { start: '14:00', end: '16:00' },
+                { start: '16:00', end: '18:00' }
+            ];
+        
+            const VENUES = ['Auditorium', 'MPH', 'Classroom'];
+            const EQUIPMENT = ['Camera', 'Projector', 'Sound System'];
+        
+            // DOM Elements
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const availabilityInfo = document.getElementById('availabilityInfo');
+            const noDateSelected = document.getElementById('noDateSelected');
+            const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+            const timeSlotsList = document.getElementById('timeSlotsList');
+            const existingEvents = document.getElementById('existingEvents');
+            const clubNameDisplay = document.getElementById('clubNameDisplay');
+            const adminName = document.getElementById('adminName');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const proceedToBookBtn = document.getElementById('proceedToBookBtn');
+        
+            // Utility Functions
+            const showLoading = () => loadingSpinner.classList.remove('d-none');
+            const hideLoading = () => loadingSpinner.classList.add('d-none');
+        
+            const formatDate = (date) => {
+                return new Date(date).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            };
+        
+            const formatTime = (time) => {
+                return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            };
+        
+            const showAlert = (message, type = 'info') => {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+                alertDiv.style.zIndex = '9999';
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+                setTimeout(() => alertDiv.remove(), 5000);
+            };
+        
+            // Authentication State Observer
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    const clubName = sessionStorage.getItem('clubName');
+                    clubNameDisplay.textContent = clubName;
+                    adminName.textContent = user.email.split('@')[0];
+                    
+                    // Pre-fill club name in form
+                    document.getElementById('clubName').value = clubName;
+                    
+                    initializeCalendar();
+                    await loadClubData();
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        // Event Click Handler
+        function handleEventClick(info) {
+    const event = info.event;
+    const eventData = event.extendedProps;
+    const isPlacementAdmin = currentUser.email === 'placements.admin@gmail.com';
+
+    // Add override button in modal footer
+    const overrideButton = isPlacementAdmin ? `
+        <button type="button" class="btn btn-warning" onclick="handlePlacementOverride('${event.id}')">
+            <i class="bi bi-exclamation-triangle me-2"></i>Override for Placement Event
+        </button>
+    ` : '';
+
+    // Create modal HTML
+    const modalHtml = `
+        <div class="modal fade" id="eventDetailsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">${event.title}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="event-details">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p><strong>Date:</strong> ${formatDate(eventData.date)}</p>
+                                    <p><strong>Time:</strong> ${formatTime(eventData.startTime)} - ${formatTime(eventData.endTime)}</p>
+                                    <p><strong>Venue:</strong> ${eventData.venue}</p>
+                                    <p><strong>Club:</strong> ${eventData.clubName}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Status:</strong> <span class="badge bg-${getStatusColor(eventData.status)}">${eventData.status}</span></p>
+                                    <p><strong>Submitted by:</strong> ${eventData.createdBy}</p>
+                                    <p><strong>Submission Date:</strong> ${formatDate(eventData.submissionDate)}</p>
+                                </div>
+                            </div>
+
+                            ${eventData.status === 'overridden' ? `
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    This event was overridden by Placements Department on 
+                                    ${new Date(eventData.overriddenAt.toDate()).toLocaleString()}
+                                </div>
+                            ` : ''}
+
+                            <div class="mb-3">
+                                <h6>Event Details</h6>
+                                <p>${eventData.eventDetails || 'No details available'}</p>
+                            </div>
+
+                            ${eventData.services && eventData.services.length > 0 ? `
+                                <div class="mb-3">
+                                    <h6>Service Requirements</h6>
+                                    <ul class="list-unstyled">
+                                        ${eventData.services.map(service => `<li><i class="bi bi-check2 text-success me-2"></i>${service}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+
+                            ${eventData.budget ? `
+                                <div class="mb-3">
+                                    <h6>Budget Details</h6>
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Quantity</th>
+                                                <th>Rate</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${Object.entries(eventData.budget.items).map(([item, details]) => `
+                                                <tr>
+                                                    <td>${item}</td>
+                                                    <td>${details.quantity}</td>
+                                                    <td>₹${details.rate}</td>
+                                                    <td>₹${details.total}</td>
+                                                </tr>
+                                            `).join('')}
+                                            <tr class="table-info">
+                                                <td colspan="3" class="text-end"><strong>Grand Total</strong></td>
+                                                <td><strong>₹${eventData.budget.grandTotal}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ` : ''}
+
+                            <div class="mb-3">
+                                <h6>Contact Information</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>SPOC:</strong> ${eventData.spoc?.name || 'N/A'}</p>
+                                        <p><strong>Mobile:</strong> ${eventData.spoc?.mobile || 'N/A'}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Head:</strong> ${eventData.organizers?.head?.name || 'N/A'}</p>
+                                        <p><strong>Co-Head:</strong> ${eventData.organizers?.cohead?.name || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${eventData.approvalHistory && eventData.approvalHistory.length > 0 ? `
+                                <div class="mb-3">
+                                    <h6>Approval History</h6>
+                                    <div class="approval-timeline">
+                                        ${eventData.approvalHistory.map(approval => `
+                                            <div class="approval-step ${approval.status}">
+                                                <strong>${approval.role}</strong>
+                                                <p class="mb-1">${approval.status.toUpperCase()} - ${approval.remarks}</p>
+                                                <small>${new Date(approval.timestamp.toDate()).toLocaleString()}</small>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        ${overrideButton}
+                        ${eventData.createdBy === currentUser.email ? `
+                            <button type="button" class="btn btn-danger" onclick="deleteEvent('${event.id}')">Delete Event</button>
+                            <button type="button" class="btn btn-primary" onclick="editEvent('${event.id}')">Edit Event</button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remove existing modal if any
+    const existingModal = document.getElementById('eventDetailsModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Add new modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+    modal.show();
+}
+function getResourceAuthorities(resources) {
+    const authorityMapping = {
+        'Lights and Sound System': ['Purchase Officer', 'IT Admin'],
+        'Camera': ['Purchase Officer'],
+        'Inauguration Lamp': ['Purchase Officer'],
+        'Executive lunch/dinner': ['Food Incharge'],
+        'Tea and Snacks': ['Food Incharge'],
+        'Projector': ['IT Admin'],
+        'IT Support': ['IT Admin']
+    };
+    
+    // Collect all unique authorities needed for the selected resources
+    const authorities = new Set();
+    resources.forEach(resource => {
+        const mappedAuthorities = authorityMapping[resource] || [];
+        mappedAuthorities.forEach(authority => authorities.add(authority));
+    });
+    
+    return Array.from(authorities);
+}
+
+// Club Data and Approval Hierarchy Management
+async function loadClubData() {
+    try {
+        const clubEmail = sessionStorage.getItem('clubEmail');
+        if (!clubEmail) {
+            throw new Error('Club email not found in session');
+        }
+
+        // Get club profile and events
+        const clubDoc = await db.collection('club_profiles').doc(clubEmail).get();
+        let clubData = clubDoc.exists ? clubDoc.data() : null;
+
+        if (!clubData) {
+            // Create default club profile if it doesn't exist
+            clubData = {
+                name: sessionStorage.getItem('clubName'),
+                email: clubEmail,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                eventCount: 0,
+                activeEvents: 0
+            };
+            await db.collection('club_profiles').doc(clubEmail).set(clubData);
+        }
+
+        // Get club's events statistics
+        const eventsSnapshot = await db.collection('events')
+            .where('createdBy', '==', clubEmail)
+            .get();
+
+        const events = eventsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        // Update club statistics
+        const statistics = {
+            total: events.length,
+            pending: events.filter(e => e.status === 'pending').length,
+            approved: events.filter(e => e.status === 'approved').length,
+            rejected: events.filter(e => e.status === 'rejected').length
+        };
+
+        // Update UI with club data
+        updateClubDashboard(statistics);
+
+        // Set up real-time listeners for venue availability
+        setupVenueListeners();
+
+        // Set up real-time listeners for approval status
+        events.forEach(event => {
+            setupApprovalListener(event.id);
+        });
+
+        return clubData;
+
+    } catch (error) {
+        console.error('Error loading club data:', error);
+        showAlert('Error loading club data', 'error');
+    }
+}
+
+// Approval Hierarchy Configuration
+const approvalHierarchy = [
+    { level: 1, role: 'Club Head', field: 'clubHeadApproval' },
+    { level: 2, role: 'Faculty Mentor', field: 'facultyMentorApproval' },
+    { level: 3, role: 'President/Vice President', field: 'presidentApproval' },
+    { level: 4, role: 'HOD', field: 'hodApproval' },
+    { level: 5, role: 'Rector', field: 'rectorApproval' },
+    { level: 6, role: 'Purchase Officer', field: 'purchaseOfficerApproval' },
+    { level: 7, role: 'Accounts Officer', field: 'accountsOfficerApproval' },
+    { level: 8, role: 'Administration Officer', field: 'adminOfficerApproval' },
+    { level: 9, role: 'Deputy Registrar', field: 'deputyRegistrarApproval' },
+    { level: 10, role: 'Director', field: 'directorApproval' }
+];
+
+// Setup Approval Status Listener
+function setupApprovalListener(eventId) {
+    db.collection('events').doc(eventId)
+        .onSnapshot((doc) => {
+            if (doc.exists) {
+                const eventData = doc.data();
+                updateApprovalStatus(eventId, eventData);
+            }
+        });
+}
+
+// Update Approval Status UI
+function updateApprovalStatus(eventId, eventData) {
+    const approvalStatus = document.getElementById(`approval-status-${eventId}`);
+    if (approvalStatus) {
+        let currentLevel = 0;
+        let status = 'Pending';
+
+        for (const level of approvalHierarchy) {
+            if (eventData[level.field]) {
+                currentLevel = level.level;
+                status = `Approved by ${level.role}`;
+            } else {
+                break;
+            }
+        }
+
+        approvalStatus.innerHTML = `
+            <div class="approval-progress">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: ${(currentLevel / approvalHierarchy.length) * 100}%">
+                    </div>
+                </div>
+                <span class="status-text">${status}</span>
+            </div>
+        `;
+    }
+}
+
+// Setup Real-time Venue Availability Listeners
+function setupVenueListeners() {
+    const venues = ['Auditorium', 'MPH', 'Classroom'];
+    
+    venues.forEach(venue => {
+        db.collection('events')
+            .where('status', 'in', ['approved', 'pending'])
+            .onSnapshot((snapshot) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added' || change.type === 'modified' || change.type === 'removed') {
+                        // Update venue availability UI
+                        updateVenueAvailability();
+                        // Update time slots
+                        if (selectedDate) {
+                            loadTimeSlots(selectedDate);
+                        }
+                    }
+                });
+            });
+    });
+}
+
+// Update Venue Availability
+async function updateVenueAvailability() {
+    if (!selectedDate) return;
+
+    const venues = {
+        'Auditorium': document.getElementById('auditoriumStatus'),
+        'MPH': document.getElementById('mphStatus'),
+        'Classroom': document.getElementById('classroomStatus')
+    };
+
+    for (const [venue, element] of Object.entries(venues)) {
+        const events = await db.collection('events')
+            .where('date', '==', selectedDate)
+            .where('venue', '==', venue)
+            .where('status', 'in', ['approved', 'pending'])
+            .get();
+
+        const isAvailable = events.empty;
+        const hasPlacementEvent = events.docs.some(doc => 
+            doc.data().createdBy === 'placements.admin@gmail.com'
+        );
+
+        element.textContent = isAvailable ? 'Available' : (hasPlacementEvent ? 'Reserved for Placement' : 'Booked');
+        element.className = `status-badge status-${isAvailable ? 'available' : 'unavailable'}`;
+    }
+}
+
+// Update Club Dashboard
+function updateClubDashboard(statistics) {
+    // Create or update club statistics display
+    const statsContainer = document.createElement('div');
+    statsContainer.className = 'club-statistics mb-4';
+    statsContainer.innerHTML = `
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Total Events</h6>
+                    <h3>${statistics.total}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Pending</h6>
+                    <h3>${statistics.pending}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Approved</h6>
+                    <h3>${statistics.approved}</h3>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h6>Rejected</h6>
+                    <h3>${statistics.rejected}</h3>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Insert statistics before the calendar
+    const calendarCard = document.querySelector('.card');
+    calendarCard.parentNode.insertBefore(statsContainer, calendarCard);
+}
+
+// Add these styles to your CSS
+const clubStyles = document.createElement('style');
+clubStyles.textContent = `
+    .club-statistics .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .club-statistics .stat-card h6 {
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .club-statistics .stat-card h3 {
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .approval-progress {
+        margin-top: 1rem;
+    }
+
+    .approval-progress .progress {
+        height: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .approval-progress .status-text {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .placement-override {
+        background-color: var(--danger-color);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+`;
+document.head.appendChild(clubStyles);
+
+async function handlePlacementOverride(eventId) {
+    if (currentUser.email !== 'placements.admin@gmail.com') {
+        return;
+    }
+
+    try {
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        const eventData = eventDoc.data();
+
+        // Update the existing event status
+        await db.collection('events').doc(eventId).update({
+            status: 'overridden',
+            overriddenBy: 'Placements Department',
+            overriddenAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Create email content for the club admin
+        const subject = `Event Venue Override Notice - ${eventData.eventName}`;
+        const body = `
+Dear ${eventData.clubName} Admin,
+
+This is to inform you that your event "${eventData.eventName}" scheduled for ${eventData.date} at ${eventData.venue} has been overridden by the Placements Department due to placement activities.
+
+Event Details:
+- Event Name: ${eventData.eventName}
+- Date: ${eventData.date}
+- Time: ${eventData.startTime} - ${eventData.endTime}
+- Venue: ${eventData.venue}
+
+Please reschedule your event at a different venue or time slot. We apologize for any inconvenience caused.
+
+Best Regards,
+Placements Department
+`;
+
+        // Create mailto link
+        const mailtoLink = `mailto:${eventData.createdBy}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open default email client
+        window.location.href = mailtoLink;
+
+        // Create notification
+        await db.collection('notifications').add({
+            type: 'venue_override',
+            eventId: eventId,
+            recipientEmail: eventData.createdBy,
+            message: `Your event "${eventData.eventName}" has been overridden by Placements Department. Please check your email for details.`,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'unread'
+        });
+
+        showAlert('Event overridden and notification sent', 'success');
+
+    } catch (error) {
+        console.error('Error overriding event:', error);
+        showAlert('Error overriding event', 'error');
+    }
+}
+
+async function loadClubData() {
+    try {
+        const clubEmail = currentUser.email;
+        const clubId = clubEmail.split('@')[0];
+
+        // First, check if club profile exists
+        const clubDoc = await db.collection('club_profiles').doc(clubId).get();
+        let clubData;
+
+        if (!clubDoc.exists) {
+            // Create default club profile
+            clubData = {
+                name: sessionStorage.getItem('clubName'),
+                email: clubEmail,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                eventCount: 0,
+                activeEvents: 0,
+                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            await db.collection('club_profiles').doc(clubId).set(clubData);
+        } else {
+            clubData = clubDoc.data();
+        }
+
+        // Get club's events statistics
+        const eventsSnapshot = await db.collection('events')
+            .where('createdBy', '==', clubEmail)
+            .get();
+
+        const statistics = {
+            total: eventsSnapshot.size,
+            pending: eventsSnapshot.docs.filter(doc => doc.data().status === 'pending').length,
+            approved: eventsSnapshot.docs.filter(doc => doc.data().status === 'approved').length,
+            rejected: eventsSnapshot.docs.filter(doc => doc.data().status === 'rejected').length
+        };
+
+        // Update UI
+        updateClubDashboard(clubData, statistics);
+
+        return clubData;
+
+    } catch (error) {
+        console.error('Error loading club data:', error);
+        showAlert('Error loading club data. Please refresh the page.', 'error');
+    }
+}
+
+// Helper function to update dashboard UI
+function updateClubDashboard(clubData, statistics) {
+    // Update club name display
+    document.getElementById('clubNameDisplay').textContent = clubData.name;
+
+    // Update statistics if they exist
+    if (statistics) {
+        const statsContainer = document.createElement('div');
+        statsContainer.className = 'club-statistics mb-4';
+        statsContainer.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h6>Total Events</h6>
+                        <h3>${statistics.total}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h6>Pending</h6>
+                        <h3>${statistics.pending}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h6>Approved</h6>
+                        <h3>${statistics.approved}</h3>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h6>Rejected</h6>
+                        <h3>${statistics.rejected}</h3>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Insert statistics before the calendar
+        const calendarCard = document.querySelector('.card');
+        if (calendarCard && calendarCard.parentNode) {
+            calendarCard.parentNode.insertBefore(statsContainer, calendarCard);
+        }
+    }
+}
+// Add these supporting functions for event management
+async function deleteEvent(eventId) {
+    if (!confirm('Are you sure you want to delete this event?')) {
+        return;
+    }
+
+    showLoading();
+    try {
+        await db.collection('events').doc(eventId).delete();
+        showAlert('Event deleted successfully', 'success');
+        calendar.refetchEvents();
+        bootstrap.Modal.getInstance(document.getElementById('eventDetailsModal')).hide();
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        showAlert('Error deleting event', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function editEvent(eventId) {
+    showLoading();
+    try {
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Event not found');
+        }
+
+        const eventData = eventDoc.data();
+        
+        // Hide details modal
+        bootstrap.Modal.getInstance(document.getElementById('eventDetailsModal')).hide();
+
+        // Pre-fill the form with existing data
+        document.getElementById('eventName').value = eventData.eventName;
+        document.getElementById('eventDate').value = eventData.date;
+        document.getElementById('startTime').value = eventData.startTime;
+        document.getElementById('endTime').value = eventData.endTime;
+        document.getElementById('venueType').value = eventData.venue;
+        document.getElementById('eventDetails').value = eventData.eventDetails;
+        
+        // Pre-fill checkboxes
+        document.getElementById('secondYear').checked = eventData.preponeClasses?.secondYear || false;
+        document.getElementById('firstYear').checked = eventData.preponeClasses?.firstYear || false;
+        
+        // Pre-fill services
+        const services = ['lightsSound', 'projector', 'camera', 'lamp', 'housekeeping', 'security'];
+        services.forEach(service => {
+            document.getElementById(service).checked = eventData.services?.includes(service) || false;
+        });
+        
+        // Pre-fill contact information
+        if (eventData.spoc) {
+            document.getElementById('spocName').value = eventData.spoc.name;
+            document.getElementById('spocMobile').value = eventData.spoc.mobile;
+        }
+        
+        if (eventData.organizers) {
+            document.getElementById('headName').value = eventData.organizers.head?.name || '';
+            document.getElementById('headMobile').value = eventData.organizers.head?.mobile || '';
+            document.getElementById('coheadName').value = eventData.organizers.cohead?.name || '';
+            document.getElementById('coheadMobile').value = eventData.organizers.cohead?.mobile || '';
+        }
+
+        // Show the form modal
+        const modal = new bootstrap.Modal(document.getElementById('newEventModal'));
+        modal.show();
+
+    } catch (error) {
+        console.error('Error editing event:', error);
+        showAlert('Error editing event', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+// Customize Day Cell Display
+async function customizeDayCell(arg) {
+    const date = arg.date;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  // Check if date is in exam week
+  if (isExamWeek(date)) {
+        arg.el.classList.add('exam-week');
+        arg.el.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+        arg.el.style.cursor = 'not-allowed';
+        
+        // Add exam week indicator
+        const examIndicator = document.createElement('div');
+        examIndicator.className = 'exam-week-indicator';
+        examIndicator.innerHTML = '📚';
+        arg.el.appendChild(examIndicator);
+        
+        // Add tooltip
+        arg.el.setAttribute('title', 'Mid-term Exam Week - No Events Allowed');
+        return;
+    }
+    // Past dates
+    if (date < today) {
+        arg.el.classList.add('fc-day-past');
+        arg.el.style.backgroundColor = '#f8f9fa';
+        arg.el.style.cursor = 'not-allowed';
+        return;
+    }
+
+    // Check if date is in exam week (15th Jan to 21st Jan 2024)
+    const examStart = new Date('2024-01-15');
+    const examEnd = new Date('2024-01-21');
+    if (date >= examStart && date <= examEnd) {
+        arg.el.classList.add('fc-day-exam');
+        arg.el.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+        arg.el.style.cursor = 'not-allowed';
+        
+        // Add tooltip for exam week
+        const tooltip = document.createElement('div');
+        tooltip.className = 'exam-week-tooltip';
+        tooltip.textContent = 'Exam Week - Booking Not Allowed';
+        arg.el.setAttribute('title', 'Exam Week - Booking Not Allowed');
+        return;
+    }
+
+    try {
+        // Check events on this date
+        const events = await db.collection('events')
+            .where('date', '==', date.toISOString().split('T')[0])
+            .where('status', 'in', ['approved', 'pending'])
+            .get();
+
+        const totalEvents = events.size;
+        const maxEventsPerDay = 3;
+        const isPlacementAdmin = currentUser.email === 'placements.admin@gmail.com';
+
+        // Check if any placement events exist
+        const hasPlacementEvent = events.docs.some(doc => 
+            doc.data().createdBy === 'placements.admin@gmail.com'
+        );
+
+        if (hasPlacementEvent && !isPlacementAdmin) {
+            // If there's a placement event and current user is not placement admin
+            arg.el.classList.add('fc-day-placement');
+            arg.el.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+            arg.el.style.cursor = 'not-allowed';
+            arg.el.setAttribute('title', 'Reserved for Placement Event');
+        } else if (totalEvents >= maxEventsPerDay && !isPlacementAdmin) {
+            // If date is fully booked and user is not placement admin
+            arg.el.classList.add('fc-day-full');
+            arg.el.style.backgroundColor = 'rgba(241, 196, 15, 0.1)';
+            arg.el.style.cursor = 'not-allowed';
+            arg.el.setAttribute('title', 'Fully Booked');
+        } else {
+            // Available date
+            arg.el.classList.add('fc-day-available');
+            arg.el.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
+            arg.el.style.cursor = 'pointer';
+            
+            // Add tooltip showing available slots
+            const availableSlots = maxEventsPerDay - totalEvents;
+            arg.el.setAttribute('title', `Available Slots: ${availableSlots}`);
+        }
+
+        // Add event count indicator
+        if (totalEvents > 0) {
+            const eventCount = document.createElement('div');
+            eventCount.className = 'event-count';
+            eventCount.textContent = totalEvents;
+            eventCount.style.position = 'absolute';
+            eventCount.style.top = '5px';
+            eventCount.style.right = '5px';
+            eventCount.style.backgroundColor = getEventCountColor(totalEvents, maxEventsPerDay);
+            eventCount.style.color = 'white';
+            eventCount.style.padding = '2px 6px';
+            eventCount.style.borderRadius = '10px';
+            eventCount.style.fontSize = '0.8em';
+            arg.el.appendChild(eventCount);
+        }
+
+    } catch (error) {
+        console.error('Error customizing day cell:', error);
+        arg.el.style.backgroundColor = 'rgba(189, 195, 199, 0.1)';
+    }
+}
+// Add these styles to your CSS
+const examWeekStyles = `
+    .exam-week {
+        position: relative;
+        background-color: rgba(231, 76, 60, 0.1) !important;
+    }
+
+    .exam-week-indicator {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2em;
+        opacity: 0.5;
+    }
+
+    .exam-week::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+            45deg,
+            rgba(231, 76, 60, 0.1),
+            rgba(231, 76, 60, 0.1) 10px,
+            rgba(231, 76, 60, 0.2) 10px,
+            rgba(231, 76, 60, 0.2) 20px
+        );
+        pointer-events: none;
+    }
+`;
+
+// Add the styles to the document
+const styleSheet = document.createElement('style');
+styleSheet.textContent = examWeekStyles;
+document.head.appendChild(styleSheet);
+
+// Update your event proposal form submission to include exam week check
+document.getElementById('eventProposalForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const eventDate = document.getElementById('eventDate').value;
+    
+    // Check if date is in exam week
+    if (isExamWeek(eventDate)) {
+        showAlert('Cannot schedule events during exam week', 'warning');
+        return;
+    }});
+// Helper function for event count color
+function getEventCountColor(count, max) {
+    if (count >= max) return '#e74c3c';
+    if (count >= max - 1) return '#f1c40f';
+    return '#2ecc71';
+}
+
+// Add these styles to your CSS
+const styles = document.createElement('style');
+styles.textContent = `
+    .fc-day-past {
+        opacity: 0.7;
+    }
+
+    .fc-day-exam {
+        position: relative;
+    }
+
+    .fc-day-exam::after {
+        content: '📚';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5em;
+        opacity: 0.2;
+    }
+
+    .fc-day-placement::after {
+        content: '🎓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5em;
+        opacity: 0.2;
+    }
+
+    .event-count {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        min-width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        border-radius: 10px;
+        font-size: 0.8em;
+        font-weight: bold;
+        z-index: 1;
+    }
+
+    .fc-day-today {
+        background-color: rgba(52, 152, 219, 0.1) !important;
+    }
+
+    .fc-day:hover {
+        transition: background-color 0.3s ease;
+    }
+
+    .fc-day[title] {
+        position: relative;
+    }
+
+    .tooltip {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        z-index: 1000;
+        pointer-events: none;
+    }
+`;
+document.head.appendChild(styles);
+            // Initialize Calendar
+            function initializeCalendar() {
+                const calendarEl = document.getElementById('calendar');
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    selectable: true,
+                    selectConstraint: {
+                        start: new Date().toISOString().split('T')[0]
+                    },
+                    dateClick: handleDateClick,
+                    events: loadEvents,
+                    eventClick: handleEventClick,
+                    dayCellDidMount: customizeDayCell
+                });
+                
+                calendar.render();
+            }
+        
+            // Load Events
+            async function loadEvents(fetchInfo, successCallback, failureCallback) {
+                try {
+                    const snapshot = await db.collection('events')
+                        .where('date', '>=', fetchInfo.start.toISOString().split('T')[0])
+                        .where('date', '<=', fetchInfo.end.toISOString().split('T')[0])
+                        .get();
+        
+                    const events = [];
+                    snapshot.forEach(doc => {
+                        const event = doc.data();
+                        events.push({
+                            id: doc.id,
+                            title: event.eventName,
+                            start: `${event.date}T${event.startTime}`,
+                            end: `${event.date}T${event.endTime}`,
+                            backgroundColor: getEventColor(event),
+                            borderColor: getEventColor(event),
+                            extendedProps: {
+                                ...event,
+                                eventId: doc.id
+                            }
+                        });
+                    });
+        
+                    successCallback(events);
+                } catch (error) {
+                    console.error('Error loading events:', error);
+                    failureCallback(error);
+                }
+            }
+        
+            // Handle Date Click
+            async function handleDateClick(info) {
+                selectedDate = info.dateStr;
+                const date = new Date(selectedDate);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+        
+                if (date < today) {
+                    showAlert('Cannot check availability for past dates', 'warning');
+                    return;
+                }
+                 // Add exam week check
+    if (isExamWeek(date)) {
+        showAlert('Cannot schedule events during exam week', 'warning');
+        return;
+    }
+        
+                showLoading();
+                try {
+                    selectedDateDisplay.textContent = formatDate(selectedDate);
+                    
+                    // Update event date field
+                    document.getElementById('eventDate').value = selectedDate;
+                    document.getElementById('eventDay').value = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' });
+                    
+                    await checkVenueAvailability(selectedDate);
+                    await checkEquipmentAvailability(selectedDate);
+                    await loadTimeSlots(selectedDate);
+                    
+                    noDateSelected.classList.add('d-none');
+                    availabilityInfo.classList.remove('d-none');
+                    
+                    await loadExistingEvents(selectedDate);
+                } catch (error) {
+                    console.error('Error checking availability:', error);
+                    showAlert('Error checking availability', 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+        
+            // Check Venue Availability
+            async function checkVenueAvailability(date) {
+                const venues = {
+                    'Auditorium': document.getElementById('auditoriumStatus'),
+                    'MPH': document.getElementById('mphStatus'),
+                    'Classroom': document.getElementById('classroomStatus')
+                };
+        
+                for (const [venue, element] of Object.entries(venues)) {
+                    const events = await db.collection('events')
+                        .where('date', '==', date)
+                        .where('venue', '==', venue)
+                        .where('status', 'in', ['approved', 'pending'])
+                        .get();
+        
+                    const isAvailable = events.empty;
+                    element.textContent = isAvailable ? 'Available' : 'Booked';
+                    element.className = `status-badge status-${isAvailable ? 'available' : 'unavailable'}`;
+                }
+            }
+        
+            // Check Equipment Availability
+            async function checkEquipmentAvailability(date) {
+                const equipment = {
+                    'Camera': document.getElementById('cameraStatus'),
+                    'Projector': document.getElementById('projectorStatus'),
+                    'Sound System': document.getElementById('soundStatus')
+                };
+        
+                for (const [item, element] of Object.entries(equipment)) {
+                    const events = await db.collection('events')
+                        .where('date', '==', date)
+                        .where('services', 'array-contains', item.toLowerCase())
+                        .where('status', 'in', ['approved', 'pending'])
+                        .get();
+        
+                    const isAvailable = events.empty;
+                    element.textContent = isAvailable ? 'Available' : 'In Use';
+                    element.className = `status-badge status-${isAvailable ? 'available' : 'unavailable'}`;
+                }
+            }
+        
+            // Load Time Slots
+            async function loadTimeSlots(date) {
+                timeSlotsList.innerHTML = '';
+                
+                for (const slot of TIME_SLOTS) {
+                    const events = await db.collection('events')
+                        .where('date', '==', date)
+                        .where('startTime', '==', slot.start)
+                        .where('status', 'in', ['approved', 'pending'])
+                        .get();
+        
+                    const isAvailable = events.empty;
+                    const slotElement = document.createElement('div');
+                    slotElement.className = `time-slot ${isAvailable ? 'available' : 'unavailable'}`;
+                    slotElement.innerHTML = `
+                        <span>${formatTime(slot.start)} - ${formatTime(slot.end)}</span>
+                        <span class="status-badge status-${isAvailable ? 'available' : 'unavailable'}">
+                            ${isAvailable ? 'Available' : 'Booked'}
+                        </span>
+                    `;
+        
+                    if (isAvailable) {
+                        slotElement.addEventListener('click', () => {
+                            selectedTimeSlot = slot;
+                            document.getElementById('startTime').value = slot.start;
+                            document.getElementById('endTime').value = slot.end;
+                            proceedToBookBtn.disabled = false;
+                            
+                            // Highlight selected slot
+                            document.querySelectorAll('.time-slot').forEach(el => {
+                                el.classList.remove('selected');
+                            });
+                            slotElement.classList.add('selected');
+                        });
+                    }
+        
+                    timeSlotsList.appendChild(slotElement);
+                }
+            }
+        
+            // Load Existing Events
+            async function loadExistingEvents(date) {
+                const snapshot = await db.collection('events')
+                    .where('date', '==', date)
+                    .orderBy('startTime')
+                    .get();
+        
+                existingEvents.innerHTML = '';
+        
+                if (snapshot.empty) {
+                    existingEvents.innerHTML = '<p class="text-muted text-center">No events scheduled for this date</p>';
+                    return;
+                }
+        
+                snapshot.forEach(doc => {
+                    const event = doc.data();
+                    const eventElement = document.createElement('div');
+                    eventElement.className = `event-card ${event.createdBy === 'placements.admin@gmail.com' ? 'placement-event' : ''}`;
+                    eventElement.innerHTML = `
+                        <h6>${event.eventName}</h6>
+                        <p class="mb-1"><i class="bi bi-clock me-2"></i>${formatTime(event.startTime)} - ${formatTime(event.endTime)}</p>
+                        <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>${event.venue}</p>
+                        <p class="mb-0"><i class="bi bi-person me-2"></i>${event.clubName}</p>
+                        <span class="badge bg-${getStatusColor(event.status)}">${event.status}</span>
+                    `;
+                    existingEvents.appendChild(eventElement);
+                });
+            }
+        
+            document.getElementById('eventProposalForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showLoading();
+
+    try {
+        // Validate form data
+        const startTime = document.getElementById('startTime').value;
+        const endTime = document.getElementById('endTime').value;
+        const venue = document.getElementById('venueType').value;
+        const eventDate = document.getElementById('eventDate').value;
+
+        // Create event data object
+        const eventData = {
+            // Basic Information
+            schoolName: document.getElementById('schoolName').value,
+            submissionDate: new Date().toISOString().split('T')[0],
+            clubName: sessionStorage.getItem('clubName'),
+            eventName: document.getElementById('eventName').value,
+            date: eventDate,
+            startTime: startTime,
+            endTime: endTime,
+            venue: venue,
+            eventDetails: document.getElementById('eventDetails').value,
+            
+            // Classes to be preponed
+            preponeClasses: {
+                secondYear: document.getElementById('secondYear').checked,
+                firstYear: document.getElementById('firstYear').checked
+            },
+            
+            // Service Requirements
+            services: Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(checkbox => checkbox.id),
+            
+            // Contact Information
+            spoc: {
+                name: document.getElementById('spocName').value,
+                mobile: document.getElementById('spocMobile').value
+            },
+            
+            organizers: {
+                head: {
+                    name: document.getElementById('headName').value,
+                    mobile: document.getElementById('headMobile').value
+                },
+                cohead: {
+                    name: document.getElementById('coheadName').value,
+                    mobile: document.getElementById('coheadMobile').value
+                }
+            },
+            
+            // Status Information
+            status: 'pending',
+            currentApprovalLevel: 1,
+            createdBy: currentUser.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            
+            // Approval Tracking
+            approvalHistory: [],
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Add the event to Firestore
+        const eventRef = await db.collection('events').add(eventData);
+
+        // Create initial approval history entry
+        await db.collection('approval_history').add({
+            eventId: eventRef.id,
+            level: 1,
+            status: 'pending',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            createdBy: currentUser.email
+        });
+
+        // Create notification for first approver (Club Head)
+        await db.collection('notifications').add({
+            type: 'new_event',
+            eventId: eventRef.id,
+            recipientEmail: 'clubhead@gmail.com',
+            message: `New event "${eventData.eventName}" requires your approval`,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'unread'
+        });
+
+        showAlert('Event proposal submitted successfully!', 'success');
+        bootstrap.Modal.getInstance(document.getElementById('newEventModal')).hide();
+        calendar.refetchEvents();
+        
+    } catch (error) {
+        console.error('Error submitting proposal:', error);
+        showAlert(`Error submitting proposal: ${error.message}`, 'error');
+    } finally {
+        hideLoading();
+    }
+});
+            // Helper Functions
+            function getSelectedServices() {
+                const services = ['lightsSound', 'projector', 'camera', 'lamp', 'housekeeping', 'security'];
+                return services.filter(service => document.getElementById(service).checked);
+            }
+        
+            function getEventColor(event) {
+                if (event.createdBy === 'placements.admin@gmail.com') {
+                    return '#e74c3c';
+                }
+                
+                switch (event.status) {
+                    case 'approved': return '#2ecc71';
+                    case 'pending': return '#f1c40f';
+                    case 'rejected': return '#95a5a6';
+                    default: return '#3498db';
+                }
+            }
+
+        
+// Helper function to get status color
+function getStatusColor(status) {
+    switch (status) {
+        case 'approved':
+            return 'success';
+        case 'rejected':
+            return 'danger';
+        case 'pending':
+            return 'warning';
+        case 'overridden':
+            return 'warning';
+        default:
+            return 'secondary';
+    }
+}
+        
+            // Event Handlers
+            proceedToBookBtn.addEventListener('click', () => {
+                if (!selectedTimeSlot) {
+                    showAlert('Please select a time slot first', 'warning');
+                    return;
+                }
+                const modal = new bootstrap.Modal(document.getElementById('newEventModal'));
+                modal.show();
+            });
+        
+            logoutBtn.addEventListener('click', () => {
+                auth.signOut().then(() => {
+                    sessionStorage.clear();
+                    window.location.href = 'login.html';
+                }).catch(error => {
+                    console.error('Logout error:', error);
+                    showAlert('Error logging out', 'error');
+                });
+            });
+        
+            // Error Handling
+            window.addEventListener('error', function(e) {
+                console.error('Global error:', e.error);
+                showAlert('An error occurred. Please refresh the page.', 'error');
+            });
+        
+            window.addEventListener('unhandledrejection', function(e) {
+                console.error('Unhandled promise rejection:', e.reason);
+                showAlert('An error occurred. Please refresh the page.', 'error');
+            });
+            let currentEventForGallery = null;
+
+       
+// Add this to the navigation menu (with other nav items)
+document.getElementById('galleryLink').addEventListener('click', showGalleryModal);
+
+// Function to show gallery modal
+async function showGalleryModal() {
+    const modal = new bootstrap.Modal(document.getElementById('eventGalleryModal'));
+    const eventSelect = document.getElementById('galleryEventSelect');
+    
+    try {
+        // Load approved events
+        const snapshot = await db.collection('events')
+            .where('createdBy', '==', currentUser.email)
+            .where('status', '==', 'approved')
+            .orderBy('date', 'desc')
+            .get();
+            
+        eventSelect.innerHTML = '<option value="" selected disabled>Select an event</option>';
+        
+        if (snapshot.empty) {
+            eventSelect.innerHTML += '<option disabled>No approved events found</option>';
+        } else {
+            snapshot.forEach(doc => {
+                const event = doc.data();
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = `${event.eventName} (${formatDate(event.date)})`;
+                eventSelect.appendChild(option);
+            });
+        }
+        
+        modal.show();
+    } catch (error) {
+        console.error('Error loading events for gallery:', error);
+        showAlert('Error loading events', 'error');
+    }
+}
+
+// Handle gallery upload
+document.getElementById('uploadGalleryBtn').addEventListener('click', async function() {
+    const eventId = document.getElementById('galleryEventSelect').value;
+    const driveLink = document.getElementById('galleryDriveLink').value;
+    const description = document.getElementById('galleryDescription').value;
+    const thumbnailLink = document.getElementById('galleryThumbnail').value;
+    
+    if (!eventId) {
+        showAlert('Please select an event', 'warning');
+        return;
+    }
+    
+    if (!driveLink) {
+        showAlert('Please provide a Google Drive link', 'warning');
+        return;
+    }
+
+    if (!isValidDriveLink(driveLink)) {
+        showAlert('Please provide a valid Google Drive link', 'warning');
+        return;
+    }
+    
+    const uploadBtn = this;
+    
+    try {
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Uploading...';
+        
+        // Get event details
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Selected event not found');
+        }
+        const event = eventDoc.data();
+        
+        // Create gallery data
+        const galleryData = {
+            eventId: eventId,
+            eventName: event.eventName,
+            clubName: event.clubName,
+            date: event.date,
+            createdBy: currentUser.email,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            description: description,
+            driveLink: driveLink,
+            thumbnailLink: thumbnailLink || '', // Optional thumbnail image link
+            uploadedAt: new Date().toISOString()
+        };
+        
+        // Save gallery to Firestore
+        await db.collection('event_gallery').add(galleryData);
+        
+        // Show success and reset form
+        showAlert('Gallery link uploaded successfully!', 'success');
+        document.getElementById('galleryForm').reset();
+        
+        bootstrap.Modal.getInstance(document.getElementById('eventGalleryModal')).hide();
+    } catch (error) {
+        console.error('Error uploading gallery:', error);
+        showAlert(`Error uploading gallery: ${error.message}`, 'error');
+    } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'Upload Gallery';
+    }
+});
+
+// Helper function to validate Google Drive link
+function isValidDriveLink(link) {
+    return link.includes('drive.google.com') || link.includes('docs.google.com');
+}
+
+
+        </script>
+        </body>
+        </html>

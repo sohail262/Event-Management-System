@@ -1,0 +1,335 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAdmin() {
+      return request.auth.token.email in [
+        "codeit.admin@gmail.com",
+        "elgeclub.admin@gmail.com",
+        "research.admin@gmail.com",
+        "cyberowls.admin@gmail.com",
+        "iic.admin@gmail.com",
+        "tarang.admin@gmail.com",
+        "isoc.admin@gmail.com",
+        "impulse.admin@gmail.com",
+        "sankalp.admin@gmail.com",
+        "placements.admin@gmail.com"
+      ];
+    }
+
+    function isPlacementAdmin() {
+      return request.auth.token.email == "placements.admin@gmail.com";
+    }
+    
+    function isEventOrganizer(eventData) {
+      return request.auth.token.email == eventData.createdBy;
+    }
+
+    function getClubName(email) {
+      let clubs = {
+        "codeit.admin@gmail.com": "Code IT Club",
+        "elgeclub.admin@gmail.com": "ELGE Club",
+        "research.admin@gmail.com": "Research Club",
+        "cyberowls.admin@gmail.com": "Cyber Owls",
+        "iic.admin@gmail.com": "IIC",
+        "tarang.admin@gmail.com": "Tarang",
+        "isoc.admin@gmail.com": "ISOC",
+        "impulse.admin@gmail.com": "Impulse",
+        "sankalp.admin@gmail.com": "Sankalp",
+        "placements.admin@gmail.com": "Placements"
+      };
+      return clubs[email];
+    }
+    // Add this with your other helper functions at the top
+function validateGalleryData(galleryData) {
+    return galleryData.keys().hasAll([
+        'eventId',
+        'eventName',
+        'clubName',
+        'date',
+        'createdBy',
+        'createdAt',
+        'description',
+        'driveLink',
+        'uploadedAt'
+    ]) &&
+    galleryData.driveLink.matches('^https://((drive|docs)\\.google\\.com/).*') &&
+    galleryData.createdBy is string &&
+    galleryData.eventId is string &&
+    galleryData.eventName is string &&
+    galleryData.clubName is string &&
+    galleryData.date is string &&
+    galleryData.description is string;
+}
+    function getRoleLevel(email) {
+    let levels = {
+        "clubhead@gmail.com": 1,
+        "facultymentor@gmail.com": 2,
+        "president@gmail.com": 3,
+        "hod@gmail.com": 4,
+        "rector@gmail.com": 5,
+        "purchase@gmail.com": 6,
+        "accounts@gmail.com": 7,
+        "admin@gmail.com": 8,
+        "registrar@gmail.com": 9,
+        "director@gmail.com": 10
+    };
+    return levels[email];
+}
+
+function canApproveLevel(userEmail, level) {
+    return getRoleLevel(userEmail) == level;
+}
+
+    function isValidTimeSlot(startTime, endTime) {
+      let validSlots = [
+        {'start': '09:00', 'end': '11:00'},
+        {'start': '11:00', 'end': '13:00'},
+        {'start': '14:00', 'end': '16:00'},
+        {'start': '16:00', 'end': '18:00'}
+      ];
+      return validSlots.hasAny([{'start': startTime, 'end': endTime}]);
+    }
+    
+    function isValidVenue(venue) {
+      return venue in ['Auditorium', 'MPH', 'Classroom'];
+    }
+    
+    function isVenueAvailable(venue, date, startTime, endTime) {
+      let existingEvents = getAfter(/databases/$(database)/documents/events)
+        .where('date', '==', date)
+        .where('venue', '==', venue)
+        .where('status', 'in', ['approved', 'pending']);
+      
+      return !existingEvents.hasAny([{
+        'startTime': startTime,
+        'endTime': endTime
+      }]);
+    }
+    
+    function isExamWeek(date) {
+      let examStart = timestamp.date(2024, 1, 15);
+      let examEnd = timestamp.date(2024, 1, 21);
+      return date >= examStart && date <= examEnd;
+    }
+
+    function isAuthority() {
+      return request.auth.token.email in [
+        "clubhead@gmail.com",
+        "facultymentor@gmail.com",
+        "president@gmail.com",
+        "hod@gmail.com",
+        "rector@gmail.com",
+        "purchase@gmail.com",
+        "accounts@gmail.com",
+        "admin@gmail.com",
+        "registrar@gmail.com",
+        "director@gmail.com"
+      ];
+    }
+    // Add to your existing Firestore rules
+match /meeting_requests/{requestId} {
+    allow read: if request.auth != null && (
+        request.auth.token.email in resource.data.recipients ||
+        request.auth.token.email == resource.data.requestedBy.email ||
+        isAuthority()
+    );
+    
+    allow create: if request.auth != null && (
+        isAuthority() ||
+        request.auth.token.email == request.resource.data.requestedBy.email
+    );
+    
+    allow update: if request.auth != null && (
+        request.auth.token.email in resource.data.recipients ||
+        request.auth.token.email == resource.data.requestedBy.email ||
+        isAuthority()
+    );
+    
+    allow delete: if false;
+}
+// Club profiles collection
+match /club_profiles/{clubId} {
+    allow read: if request.auth != null;
+    
+    allow create: if request.auth != null 
+        && (isAdmin() || isAuthority())
+        && (
+            clubId == request.auth.token.email.split('@')[0] ||
+            request.resource.data.email == request.auth.token.email
+        );
+    
+    allow update: if request.auth != null 
+        && (isAdmin() || isAuthority())
+        && (
+            clubId == request.auth.token.email.split('@')[0] ||
+            resource.data.email == request.auth.token.email
+        );
+}
+// Update the registrations collection rules
+match /registrations/{registrationId} {
+  allow read: if request.auth != null;
+  
+  allow create: if request.auth != null && (
+    // Simplified validation for registration creation
+    request.resource.data.studentEmail == request.auth.token.email &&
+    request.resource.data.status == 'registered' &&
+    request.resource.data.registeredAt is timestamp
+  );
+  
+  allow update: if request.auth != null && (
+    // Allow club admins to update registrations
+    isAdmin() ||
+    // Allow students to update their own registrations
+    request.auth.token.email == resource.data.studentEmail
+  );
+  
+  allow delete: if false;
+}
+// Events collection - Update the update rule
+match /events/{eventId} {
+    allow read: if request.auth != null;
+    
+    allow list: if request.auth != null && (
+        resource.data.createdBy == request.auth.token.email ||
+        isAuthority()
+    );
+    
+    allow create: if request.auth != null && (
+        // For club admins
+        (isAdmin() && 
+        request.resource.data.createdBy == request.auth.token.email &&
+        request.resource.data.clubName == getClubName(request.auth.token.email))
+        ||
+        // For placement admin
+        isPlacementAdmin()
+    );
+ allow update: if request.auth != null && (
+        // Existing conditions
+        (isAdmin() && resource.data.createdBy == request.auth.token.email) ||
+        isPlacementAdmin() ||
+        (isAuthority() && canApproveLevel(request.auth.token.email, resource.data.currentApprovalLevel)) ||
+        // Add this condition for meeting requests
+          // Add this condition for meeting requests
+        (isAuthority() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['meetingRequests', 'lastUpdated']))
+    );
+    allow delete: if request.auth != null && (
+        (isAdmin() && isEventOrganizer(resource.data)) ||
+        isPlacementAdmin()
+    );
+}
+    // Event Requirements
+    match /requirements/{reqId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() 
+        && request.resource.data.createdBy == request.auth.token.email;
+    }
+
+    // Service Requirements
+    match /service_requirements/{serviceId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() 
+        && request.resource.data.createdBy == request.auth.token.email;
+    }
+
+    // Venue Availability
+    match /venue_availability/{venueId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() || isPlacementAdmin();
+    }
+
+    // Equipment Availability
+    match /equipment_availability/{equipId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() || isPlacementAdmin();
+    }
+
+  // Notifications collection - Update for approval workflow
+match /notifications/{notificationId} {
+    allow read: if request.auth != null && (
+        resource.data.recipientEmail == request.auth.token.email ||
+        resource.data.clubEmail == request.auth.token.email ||
+        (isAuthority() && canApproveLevel(request.auth.token.email, resource.data.approvalLevel))
+    );
+    
+    allow create: if request.auth != null && (
+        isAdmin() ||
+        isAuthority() ||
+        request.resource.data.senderEmail == request.auth.token.email
+    );
+    
+    allow update: if request.auth != null && (
+        resource.data.recipientEmail == request.auth.token.email ||
+        (isAuthority() && canApproveLevel(request.auth.token.email, resource.data.approvalLevel))
+    );
+    
+    allow delete: if isAdmin() || (
+        isAuthority() && 
+        canApproveLevel(request.auth.token.email, resource.data.approvalLevel)
+    );
+}
+  // Approval History collection
+match /approval_history/{historyId} {
+    allow read: if request.auth != null;
+    allow create: if request.auth != null && (
+        isAuthority() || 
+        isAdmin()
+    );
+    allow update: if false;
+    allow delete: if false;
+}
+// Event History collection
+match /event_history/{historyId} {
+    allow read: if request.auth != null;
+    allow create: if request.auth != null && (
+        isAdmin() || 
+        (isAuthority() && canApproveLevel(request.auth.token.email, request.resource.data.approvalLevel))
+    );
+    allow update, delete: if false;
+}
+
+   // Event Gallery collection rules
+match /event_gallery/{galleryId} {
+    // Read rules
+    allow read: if request.auth != null;
+    
+    // Create rules
+    allow create: if request.auth != null && 
+        isAdmin() &&
+        request.resource.data.createdBy == request.auth.token.email &&
+        validateGalleryData(request.resource.data);
+    
+    // Update rules
+    allow update: if request.auth != null && 
+        isAdmin() &&
+        resource.data.createdBy == request.auth.token.email &&
+        validateGalleryData(request.resource.data);
+    
+    // Delete rules
+    allow delete: if request.auth != null && 
+        isAdmin() &&
+        resource.data.createdBy == request.auth.token.email;
+}
+// Authority Roles collection
+match /authority_roles/{roleId} {
+    allow read: if request.auth != null && (
+        isAdmin() || 
+        isAuthority() || 
+        request.auth.token.email == resource.data.email
+    );
+    allow write: if false; // Only through admin console
+}
+
+   // Approval History collection
+match /approval_history/{historyId} {
+    allow read: if request.auth != null;
+    allow create: if request.auth != null && (
+        isAuthority() || 
+        isAdmin()
+    );
+    allow update: if false;
+    allow delete: if false;
+}
+  }
+}

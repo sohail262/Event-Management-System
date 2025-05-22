@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Club Hub - Approval Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --light-gray: #f8f9fa;
+        }
+        /* Add to your existing styles */
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+    color: white;
+}
+
+.form-check-label {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-label small {
+    margin-left: 0.5rem;
+    color: #6c757d;
+}
+
+.collapse {
+    transition: all 0.3s ease;
+}
+
+.card-body {
+    background-color: #f8f9fa;
+}
+/* Add to your existing styles */
+.collapse {
+    transition: all 0.3s ease;
+}
+
+#meetDiscussSection .card {
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
+}
+/* Add to your existing styles */
+.approval-timeline {
+    position: relative;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+.timeline-container {
+    position: relative;
+    padding-left: 50px;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-badge {
+    position: absolute;
+    left: -50px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-item.approved .timeline-badge {
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.timeline-item.rejected .timeline-badge {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.timeline-item.conditional .timeline-badge {
+    border-color: var(--warning-color);
+    color: var(--warning-color);
+}
+
+.timeline-content {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.timeline-content h6 {
+    margin-bottom: 10px;
+    color: var(--secondary-color);
+}
+
+.timeline-content p {
+    margin-bottom: 5px;
+}
+
+.timeline-content small {
+    display: block;
+    margin-top: 5px;
+}
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+    color: white;
+}
+
+#conditionalRequirements {
+    border-left: 3px solid var(--warning-color);
+    padding-left: 1rem;
+}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        .approval-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .approval-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .approval-status {
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .approval-history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .approval-step {
+            padding: 0.5rem;
+            border-left: 3px solid #dee2e6;
+            margin-left: 1rem;
+            position: relative;
+        }
+
+        .approval-step::before {
+            content: '';
+            position: absolute;
+            left: -6px;
+            top: 50%;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #dee2e6;
+        }
+
+        .approval-step.approved::before {
+            background: var(--success-color);
+        }
+
+        .approval-step.rejected::before {
+            background: var(--danger-color);
+        }
+
+        .approval-step.conditional::before {
+            background: var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-calendar-event me-2"></i>Student Club Hub Approval
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="me-3" id="userRole">Role</span>
+                <button class="btn btn-outline-primary" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Pending Approvals -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Pending Approvals</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="pendingList" class="list-group">
+                            <!-- Pending items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Event Details -->
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Event Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="eventDetails">
+                            <!-- Event details will be loaded here -->
+                        </div>
+
+                      <!-- Replace the existing Approval Actions div with this -->
+<div id="approvalActions" class="mt-4">
+    <div class="mb-3">
+        <label for="remarks" class="form-label">Remarks (optional)</label>
+        <textarea class="form-control" id="remarks" rows="3" placeholder="Add any comments or remarks..."></textarea>
+    </div>
+    
+    <!-- Conditional Approval Requirements -->
+    <div id="conditionalRequirements" class="mb-3 d-none">
+        <label for="conditions" class="form-label text-warning">* Conditions for Approval (Required)</label>
+        <textarea class="form-control" id="conditions" rows="3" placeholder="Specify the conditions that need to be met..."></textarea>
+    </div>
+
+    <!-- Meet & Discuss Section -->
+<div class="mb-3">
+    <button class="btn btn-info mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#meetDiscussSection">
+        <i class="bi bi-envelope"></i> Send Meeting Request Email
+    </button>
+    <div class="collapse" id="meetDiscussSection">
+        <div class="card card-body">
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="meetClubHead">
+                <label class="form-check-label" for="meetClubHead">
+                    Club Head (clubhead@gmail.com)
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="meetFacultyMentor">
+                <label class="form-check-label" for="meetFacultyMentor">
+                    Faculty Mentor (facultymentor@gmail.com)
+                </label>
+            </div>
+            <div class="mt-2">
+                <button class="btn btn-primary btn-sm" onclick="sendMeetingRequest()">
+                    <i class="bi bi-envelope-fill me-1"></i>Open Email Client
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Approval Buttons -->
+    <div class="d-flex gap-2">
+        <button class="btn btn-success" onclick="approveEvent('approve')">Approve</button>
+        <button class="btn btn-warning" onclick="approveEvent('conditional')">Conditional Approve</button>
+        <button class="btn btn-danger" onclick="approveEvent('reject')">Reject</button>
+    </div>
+</div>
+                <!-- Approval History -->
+                <div class="card mt-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Approval History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="approvalHistory" class="approval-history">
+                            <!-- Approval history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5Tc0paLSS9gxrWtOWKQL73RpxN3ycfPA",
+            authDomain: "event-management-system-44cec.firebaseapp.com",
+            projectId: "event-management-system-44cec",
+            storageBucket: "event-management-system-44cec.appspot.com",
+            messagingSenderId: "737978807381",
+            appId: "1:737978807381:web:ddab283404cdee111e90dc",
+            measurementId: "G-J4D9JJJF53"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUserRole = null;
+        let currentUserLevel = null;
+   
+const roleDefinitions = {
+    "clubhead@gmail.com": { role: "Club Head", level: 1 },
+    "facultymentor@gmail.com": { role: "Faculty Mentor", level: 2 },
+    "president@gmail.com": { role: "President/Vice President", level: 3 },
+    "hod@gmail.com": { role: "HOD", level: 4 },
+    "rector@gmail.com": { role: "Rector", level: 5 },
+    "purchase@gmail.com": { role: "Purchase Officer", level: 6 },
+    "accounts@gmail.com": { role: "Accounts Officer", level: 7 },
+    "admin@gmail.com": { role: "Administration Officer", level: 8 },
+    "registrar@gmail.com": { role: "Deputy Registrar", level: 9 },
+    "director@gmail.com": { role: "Director", level: 10 }
+};
+
+// Auth State Observer
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        const roleInfo = roleDefinitions[user.email];
+        if (roleInfo) {
+            currentUserRole = roleInfo.role;
+            currentUserLevel = roleInfo.level;
+            document.getElementById('userRole').textContent = roleInfo.role;
+            await loadPendingApprovals();
+        } else {
+            auth.signOut();
+            window.location.href = 'login.html';
+        }
+    } else {
+        window.location.href = 'login.html';
+    }
+});
+
+async function loadPendingEvents() {
+    showLoading();
+    const eventsContainer = document.getElementById('pendingEventsContainer');
+    eventsContainer.innerHTML = '';
+    
+    try {
+        const userRole = sessionStorage.getItem('userRole');
+        const userLevel = getApprovalLevelForRole(userRole);
+        
+        // Get all pending events
+        const eventsSnapshot = await db.collection('events')
+            .where('status', 'in', ['pending', 'conditional'])
+            .get();
+            
+        if (eventsSnapshot.empty) {
+            eventsContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No pending events requiring your approval at this time.
+                </div>
+            `;
+            hideLoading();
+            return;
+        }
+        
+        let pendingCount = 0;
+        
+        eventsSnapshot.forEach(doc => {
+            const event = doc.data();
+            event.id = doc.id;
+            
+            // Check if this event should be shown to the current user
+            if (shouldShowEvent(event)) {
+                pendingCount++;
+                renderEventCard(event, eventsContainer);
+            }
+        });
+        
+        if (pendingCount === 0) {
+            eventsContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    No pending events requiring your approval at this time.
+                </div>
+            `;
+        }
+        
+    } catch (error) {
+        console.error('Error loading pending events:', error);
+        eventsContainer.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Error loading events: ${error.message}
+            </div>
+        `;
+    } finally {
+        hideLoading();
+    }
+}
+// Update the renderEventCard function to show resource requirements
+function renderEventCard(event, container) {
+    const eventDate = new Date(event.date);
+    const formattedDate = eventDate.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+    });
+    
+    // Check if this is a resource-based approval
+    const userRole = sessionStorage.getItem('userRole');
+    const isResourceApproval = event.requiredAuthorities && 
+                              event.requiredAuthorities.includes(userRole) &&
+                              userRole !== getApprovalLevelName(event.currentApprovalLevel);
+    
+    const cardHtml = `
+        <div class="card mb-4 event-card" id="event-${event.id}">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">${event.eventName}</h5>
+                <span class="badge bg-${getStatusBadgeColor(event.status)}">${event.status}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Club:</strong> ${event.clubName}</p>
+                        <p><strong>Date:</strong> ${formattedDate}</p>
+                        <p><strong>Time:</strong> ${formatTime(event.startTime)} - ${formatTime(event.endTime)}</p>
+                        <p><strong>Venue:</strong> ${event.venue}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Submitted by:</strong> ${event.createdBy}</p>
+                        <p><strong>Current Level:</strong> ${getApprovalLevelName(event.currentApprovalLevel)}</p>
+                        <p><strong>SPOC:</strong> ${event.spoc?.name || 'N/A'} (${event.spoc?.mobile || 'N/A'})</p>
+                    </div>
+                </div>
+                
+                ${event.resources && event.resources.length > 0 ? `
+                    <div class="mb-3">
+                        <h6>Resources Required:</h6>
+                        <ul class="list-group">
+                            ${event.resources.map(resource => `
+                                <li class="list-group-item ${isResourceApproval && shouldHighlightResource(resource, userRole) ? 'list-group-item-warning' : ''}">
+                                    ${resource}
+                                    ${isResourceApproval && shouldHighlightResource(resource, userRole) ? 
+                                        '<span class="badge bg-warning text-dark ms-2">Requires your approval</span>' : ''}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                
+                <div class="mb-3">
+                    <h6>Event Details:</h6>
+                    <p>${event.eventDetails || 'No details provided'}</p>
+                </div>
+                
+                ${isResourceApproval ? `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        This event requires your approval as ${userRole} for resource allocation.
+                    </div>
+                ` : ''}
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-primary" onclick="viewEventDetails('${event.id}')">
+                    <i class="bi bi-eye me-1"></i>View Details
+                </button>
+                <button class="btn btn-success" onclick="showApprovalModal('${event.id}')">
+                    <i class="bi bi-check-circle me-1"></i>Approve
+                </button>
+                <button class="btn btn-warning" onclick="showConditionalModal('${event.id}')">
+                    <i class="bi bi-exclamation-circle me-1"></i>Conditional
+                </button>
+                <button class="btn btn-danger" onclick="showRejectModal('${event.id}')">
+                    <i class="bi bi-x-circle me-1"></i>Reject
+                </button>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', cardHtml);
+}
+function shouldHighlightResource(resource, userRole) {
+    const resourceMapping = {
+        'Lights and Sound System': ['Purchase Officer', 'IT Admin'],
+        'Camera': ['Purchase Officer'],
+        'Inauguration Lamp': ['Purchase Officer'],
+        'Executive lunch/dinner': ['Food Incharge'],
+        'Tea and Snacks': ['Food Incharge'],
+        'Projector': ['IT Admin'],
+        'IT Support': ['IT Admin']
+    };
+    
+    return resourceMapping[resource] && resourceMapping[resource].includes(userRole);
+}
+async function notifyAuthoritiesViaEmail(event, action) {
+    try {
+        // Get all authorities that need to be notified
+        const authorities = [
+            "clubhead@gmail.com",
+            "facultymentor@gmail.com", 
+            "president@gmail.com",
+            "hod@gmail.com",
+            "rector@gmail.com",
+            "purchase@gmail.com",
+            "accounts@gmail.com",
+            "admin@gmail.com",
+            "registrar@gmail.com"
+        ];
+        
+        // Add resource authorities if they exist for this event
+        if (event.requiredAuthorities && event.requiredAuthorities.length > 0) {
+            // Add any resource authorities not already in the list
+            event.requiredAuthorities.forEach(authority => {
+                if (!authorities.includes(authority)) {
+                    authorities.push(authority);
+                }
+            });
+        }
+        
+        // Create email subject and body based on action
+        let subject, body;
+        
+        if (action === 'approve') {
+            subject = `Event Approved: ${event.eventName}`;
+            body = `
+Dear Authority,
+
+The event "${event.eventName}" organized by ${event.clubName} has been APPROVED by the Director.
+
+Event Details:
+- Date: ${new Date(event.date).toLocaleDateString()}
+- Time: ${event.startTime} - ${event.endTime}
+- Venue: ${event.venue}
+- SPOC: ${event.spoc?.name || 'N/A'} (${event.spoc?.mobile || 'N/A'})
+
+${event.resources && event.resources.length > 0 ? 
+`Required Resources:
+${event.resources.map(resource => `- ${resource}`).join('\n')}
+
+Please make necessary arrangements for the resources under your authority.` : ''}
+
+Thank you for your cooperation.
+
+Regards,
+Student Club Hub
+            `;
+        } else if (action === 'reject') {
+            subject = `Event Rejected: ${event.eventName}`;
+            body = `
+Dear Authority,
+
+The event "${event.eventName}" organized by ${event.clubName} has been REJECTED by the Director.
+
+Event Details:
+- Date: ${new Date(event.date).toLocaleDateString()}
+- Time: ${event.startTime} - ${event.endTime}
+- Venue: ${event.venue}
+- SPOC: ${event.spoc?.name || 'N/A'} (${event.spoc?.mobile || 'N/A'})
+
+Rejection Remarks:
+${event.remarks || 'No specific remarks provided.'}
+
+No further action is required from your side.
+
+Regards,
+Student Club Hub
+            `;
+        } else if (action === 'conditional') {
+            subject = `Event Conditionally Approved: ${event.eventName}`;
+            body = `
+Dear Authority,
+
+The event "${event.eventName}" organized by ${event.clubName} has been CONDITIONALLY APPROVED by the Director.
+
+Event Details:
+- Date: ${new Date(event.date).toLocaleDateString()}
+- Time: ${event.startTime} - ${event.endTime}
+- Venue: ${event.venue}
+- SPOC: ${event.spoc?.name || 'N/A'} (${event.spoc?.mobile || 'N/A'})
+
+Conditions for Approval:
+${event.conditions || 'No specific conditions provided.'}
+
+${event.resources && event.resources.length > 0 ? 
+`Required Resources:
+${event.resources.map(resource => `- ${resource}`).join('\n')}
+
+Please make necessary arrangements for the resources under your authority, subject to the conditions being met.` : ''}
+
+Thank you for your cooperation.
+
+Regards,
+Student Club Hub
+            `;
+        }
+        
+        // Create mailto link with all authorities as recipients
+        const mailtoLink = `mailto:${authorities.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // Open the email client
+        window.open(mailtoLink);
+        
+    } catch (error) {
+        console.error('Error sending email notification:', error);
+        showAlert('Error sending email notification', 'error');
+    }
+}
+// Add this function to handle special notifications for Food Incharge
+async function notifyFoodIncharge(event) {
+    // Only proceed if the event requires Food Incharge
+    if (!event.requiredAuthorities || !event.requiredAuthorities.includes('Food Incharge')) {
+        return;
+    }
+    
+    try {
+        // Create a notification in the database
+        await db.collection('notifications').add({
+            eventId: event.id,
+            eventName: event.eventName,
+            recipientRole: 'Food Incharge',
+            message: `Event "${event.eventName}" has been approved and requires food arrangements.`,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'unread'
+        });
+        
+        // Send email notification
+        const foodDetails = event.resources.find(r => 
+            r === 'Executive lunch/dinner' || r === 'Tea and Snacks'
+        );
+        
+        const subject = `Food Arrangement Required for Approved Event: ${event.eventName}`;
+        const body = `
+Dear Food Incharge,
+
+The event "${event.eventName}" organized by ${event.clubName} has been fully approved and requires food arrangements.
+
+Event Details:
+- Date: ${event.date}
+- Time: ${event.startTime} - ${event.endTime}
+- Venue: ${event.venue}
+- Food Required: ${foodDetails || 'Food arrangements'}
+
+Please coordinate with the event organizers for further details.
+
+SPOC: ${event.spoc?.name || 'N/A'} (${event.spoc?.mobile || 'N/A'})
+
+Best Regards,
+Event Management System
+        `;
+        
+        // Create mailto link
+        const mailtoLink = `mailto:foodincharge@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        
+        // Open default email client
+        window.open(mailtoLink, '_blank');
+        
+    } catch (error) {
+        console.error('Error notifying Food Incharge:', error);
+    }
+}
+
+        // Update loadPendingApprovals function
+async function loadPendingApprovals() {
+    const pendingList = document.getElementById('pendingList');
+    pendingList.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+
+    try {
+        const eventsSnapshot = await db.collection('events')
+            .where('currentApprovalLevel', '==', currentUserLevel)
+            .where('status', '==', 'pending')
+            .get();
+
+        pendingList.innerHTML = '';
+
+        if (eventsSnapshot.empty) {
+            pendingList.innerHTML = '<div class="alert alert-info">No pending approvals</div>';
+            return;
+        }
+
+        eventsSnapshot.forEach(doc => {
+            const event = doc.data();
+            const eventElement = document.createElement('a');
+            eventElement.href = '#';
+            eventElement.className = 'list-group-item list-group-item-action';
+            eventElement.innerHTML = `
+                <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1">${event.eventName}</h6>
+                    <small>${new Date(event.submissionDate).toLocaleDateString()}</small>
+                </div>
+                <p class="mb-1">${event.clubName}</p>
+                <small class="text-muted">Venue: ${event.venue}</small>
+            `;
+            eventElement.onclick = (e) => {
+                e.preventDefault();
+                loadEventDetails(doc.id);
+            };
+            pendingList.appendChild(eventElement);
+        });
+    } catch (error) {
+        console.error('Error loading pending approvals:', error);
+        pendingList.innerHTML = '<div class="alert alert-danger">Error loading approvals</div>';
+    }
+}
+
+        // Load Event Details
+        async function loadEventDetails(eventId) {
+    const detailsContainer = document.getElementById('eventDetails');
+    const historyContainer = document.getElementById('approvalHistory');
+    
+    detailsContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+    historyContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+
+    try {
+        // Get event details
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Event not found');
+        }
+
+        const event = eventDoc.data();
+
+        // Get approval history from approval_history collection
+        const approvalHistorySnapshot = await db.collection('approval_history')
+            .where('eventId', '==', eventId)
+            .orderBy('createdAt', 'desc')
+            .get();
+
+        // Create approval timeline
+        let approvalTimeline = '';
+        const approvalHistory = [];
+        
+        approvalHistorySnapshot.forEach(doc => {
+            approvalHistory.push(doc.data());
+        });
+
+        if (approvalHistory.length > 0) {
+            approvalTimeline = `
+                <div class="approval-timeline mb-4">
+                    <h6 class="mb-3">Approval Timeline</h6>
+                    <div class="timeline-container">
+                        ${approvalHistory.map((approval, index) => `
+                            <div class="timeline-item ${approval.status}">
+                                <div class="timeline-badge">
+                                    <i class="bi ${getStatusIcon(approval.status)}"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <h6>${approval.role}</h6>
+                                    <p class="mb-1">${approval.status.toUpperCase()} - ${approval.remarks}</p>
+                                    ${approval.conditions ? `
+                                        <p class="text-warning mb-1"><strong>Conditions:</strong> ${approval.conditions}</p>
+                                    ` : ''}
+                                    <small class="text-muted">${new Date(approval.approvedAt).toLocaleString()}</small>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update event details display
+        detailsContainer.innerHTML = `
+            <h4>${event.eventName}</h4>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>Club:</strong> ${event.clubName}</p>
+                    <p><strong>Date:</strong> ${event.date}</p>
+                    <p><strong>Time:</strong> ${event.startTime} - ${event.endTime}</p>
+                    <p><strong>Venue:</strong> ${event.venue}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>SPOC:</strong> ${event.spoc?.name || 'N/A'}</p>
+                    <p><strong>Contact:</strong> ${event.spoc?.mobile || 'N/A'}</p>
+                    <p><strong>Submission Date:</strong> ${event.submissionDate}</p>
+                    <p><strong>Status:</strong> <span class="badge bg-${getStatusBadgeColor(event.status)}">${event.status}</span></p>
+                </div>
+            </div>
+            ${approvalTimeline}
+            <div class="mb-4">
+                <h6>Event Details</h6>
+                <p>${event.eventDetails || 'No details provided'}</p>
+            </div>
+            ${event.services && event.services.length > 0 ? `
+                <div class="mb-4">
+                    <h6>Service Requirements</h6>
+                    <ul class="list-unstyled">
+                        ${event.services.map(service => `<li><i class="bi bi-check2 text-success me-2"></i>${service}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+        `;
+
+        // Store current event ID
+        detailsContainer.dataset.eventId = eventId;
+        
+        // Show/hide approval actions based on status
+        const approvalActions = document.getElementById('approvalActions');
+        approvalActions.style.display = event.status === 'pending' ? 'block' : 'none';
+
+        // Update approval history display
+        historyContainer.innerHTML = approvalHistory.length > 0 ? 
+            approvalHistory.map(approval => `
+                <div class="approval-step ${approval.status}">
+                    <strong>${approval.role}</strong>
+                    <p class="mb-1">${approval.status.toUpperCase()} - ${approval.remarks}</p>
+                    ${approval.conditions ? `
+                        <p class="text-warning mb-1"><strong>Conditions:</strong> ${approval.conditions}</p>
+                    ` : ''}
+                    <small>${new Date(approval.approvedAt).toLocaleString()}</small>
+                </div>
+            `).join('') : 
+            '<p class="text-muted text-center">No approval history</p>';
+
+    } catch (error) {
+        console.error('Error loading event details:', error);
+        detailsContainer.innerHTML = '<div class="alert alert-danger">Error loading event details</div>';
+        historyContainer.innerHTML = '<div class="alert alert-danger">Error loading approval history</div>';
+    }
+}
+function shouldShowEvent(event) {
+    const userRole = sessionStorage.getItem('userRole');
+    
+    // Standard approval hierarchy
+    if (event.currentApprovalLevel === getApprovalLevelForRole(userRole)) {
+        return true;
+    }
+    
+    // Resource-based authorities
+    if (event.requiredAuthorities && event.requiredAuthorities.includes(userRole)) {
+        // Check if we're at the right stage for this authority
+        // Purchase Officer comes after HOD (level 4)
+        if (userRole === 'Purchase Officer' && event.currentApprovalLevel >= 4) {
+            return true;
+        }
+        
+        // IT Admin comes after Purchase Officer
+        if (userRole === 'IT Admin' && event.currentApprovalLevel >= 6) {
+            return true;
+        }
+        
+        // Food Incharge is notified after Director approval
+        if (userRole === 'Food Incharge' && event.status === 'approved') {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+// Add these helper functions
+function getStatusIcon(status) {
+    switch (status) {
+        case 'approved':
+            return 'bi-check-circle-fill';
+        case 'rejected':
+            return 'bi-x-circle-fill';
+        case 'conditional':
+            return 'bi-exclamation-circle-fill';
+        default:
+            return 'bi-circle-fill';
+    }
+}
+
+function getStatusBadgeColor(status) {
+    switch (status) {
+        case 'approved':
+            return 'success';
+        case 'rejected':
+            return 'danger';
+        case 'conditional':
+            return 'warning';
+        case 'pending':
+            return 'info';
+        default:
+            return 'secondary';
+    }
+}
+// Updated sendMeetingRequest function
+async function sendMeetingRequest() {
+    const clubHead = document.getElementById('meetClubHead').checked;
+    const facultyMentor = document.getElementById('meetFacultyMentor').checked;
+    
+    if (!clubHead && !facultyMentor) {
+        showAlert('Please select at least one person to meet with', 'warning');
+        return;
+    }
+
+    const eventId = document.getElementById('eventDetails').dataset.eventId;
+    
+    try {
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        const event = eventDoc.data();
+
+        // Create recipients array
+        const recipients = [];
+        if (clubHead) recipients.push('clubhead@gmail.com');
+        if (facultyMentor) recipients.push('facultymentor@gmail.com');
+
+        // Create email content
+        const subject = `Meeting Request: Discussion for Event - ${event.eventName}`;
+        const body = `
+Dear Team,
+
+I would like to schedule a meeting to discuss the event "${event.eventName}".
+
+Event Details:
+- Name: ${event.eventName}
+- Date: ${event.date}
+- Time: ${event.startTime} - ${event.endTime}
+- Venue: ${event.venue}
+- Club: ${event.clubName}
+
+Please suggest your available time slots for the meeting.
+
+Best Regards,
+${currentUserRole}
+        `;
+
+        // Create mailto link
+        const mailtoLink = `mailto:${recipients.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open default email client
+        window.location.href = mailtoLink;
+
+        // Record the meeting request in Firestore
+        await db.collection('meeting_requests').add({
+            eventId: eventId,
+            eventName: event.eventName,
+            requestedBy: {
+                email: auth.currentUser.email,
+                role: currentUserRole
+            },
+            recipients: recipients,
+            status: 'pending',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        showAlert('Email client opened with meeting request', 'success');
+
+    } catch (error) {
+        console.error('Error sending meeting request:', error);
+        showAlert('Error preparing meeting request', 'error');
+    }
+}
+
+
+
+// Modify the approveEvent function
+
+      // Updated approveEvent function
+// Updated approveEvent function to handle resource-based approvals
+async function approveEvent(action) {
+    const eventId = document.getElementById('eventDetails').dataset.eventId;
+    const remarks = document.getElementById('remarks').value;
+
+    // Only require remarks for reject action
+    if (action === 'reject' && !remarks) {
+        showAlert('Please add remarks for rejection', 'warning');
+        return;
+    }
+
+    try {
+        const eventDoc = await db.collection('events').doc(eventId).get();
+        if (!eventDoc.exists) {
+            throw new Error('Event not found');
+        }
+
+        const event = eventDoc.data();
+        const userRole = sessionStorage.getItem('userRole');
+
+        // Create approval data
+        const approvalData = {
+            eventId: eventId,
+            eventName: event.eventName,
+            role: currentUserRole,
+            level: currentUserLevel,
+            status: action,
+            remarks: remarks || 'No remarks',
+            approvedAt: new Date().toISOString()
+        };
+
+        // Prepare update data
+        let updateData = {
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Check if this is a resource-based approval
+        const isResourceApproval = event.requiredAuthorities && 
+                                  event.requiredAuthorities.includes(userRole) &&
+                                  userRole !== getApprovalLevelName(event.currentApprovalLevel);
+
+        if (isResourceApproval) {
+            // Handle resource-based approval
+            if (action === 'approve') {
+                // Mark this authority as having approved
+                const resourceApprovals = event.resourceApprovals || {};
+                resourceApprovals[userRole] = true;
+                updateData.resourceApprovals = resourceApprovals;
+                
+                // Add to approval history
+                await db.collection('approval_history').add({
+                    ...approvalData,
+                    isResourceApproval: true,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Update the event document
+                await db.collection('events').doc(eventId).update(updateData);
+                
+                // Notify the event creator
+                await db.collection('notifications').add({
+                    type: 'resource_approved',
+                    eventId: eventId,
+                    recipientEmail: event.createdBy,
+                    message: `Resource approval: ${userRole} has approved resources for your event "${event.eventName}".`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'unread'
+                });
+                
+                showAlert(`Resource approval recorded successfully`, 'success');
+                
+                // Check if Food Incharge needs to be notified (after Director approval)
+                if (userRole === 'Director' && event.requiredAuthorities.includes('Food Incharge')) {
+                    await notifyFoodIncharge({...event, id: eventId});
+                }
+                
+                // Refresh the displays
+                await loadPendingApprovals();
+                await loadEventDetails(eventId);
+                return;
+            } else if (action === 'reject') {
+                // Handle resource rejection
+                updateData.status = 'rejected';
+                approvalData.resourceRejection = true;
+                
+                // Add rejection notification
+                await db.collection('notifications').add({
+                    type: 'resource_rejected',
+                    eventId: eventId,
+                    recipientEmail: event.createdBy,
+                    message: `Resource rejection: ${userRole} has rejected resources for your event "${event.eventName}". ${remarks ? `Remarks: ${remarks}` : ''}`,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'unread'
+                });
+            }
+        } else {
+            // Handle standard approval flow
+            switch(action) {
+                case 'reject':
+                    updateData.status = 'rejected';
+                    updateData.currentApprovalLevel = null;
+                    updateData.remarks = remarks;
+                    
+                    // Add rejection notification
+                    await db.collection('notifications').add({
+                        type: 'event_rejected',
+                        eventId: eventId,
+                        recipientEmail: event.createdBy,
+                        message: `Your event "${event.eventName}" has been rejected by ${currentUserRole}. ${remarks ? `Remarks: ${remarks}` : ''}`,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'unread'
+                    });
+                    
+                    // If Director is rejecting, notify all authorities
+                    if (currentUserRole === 'Director') {
+                        // Update event with remarks before sending email
+                        const updatedEvent = {...event, remarks: remarks};
+                        notifyAuthoritiesViaEmail(updatedEvent, 'reject');
+                    }
+                    break;
+
+                case 'conditional':
+                    const conditions = document.getElementById('conditions')?.value;
+                    if (!conditions) {
+                        showAlert('Please specify conditions for approval', 'warning');
+                        return;
+                    }
+                    
+                    updateData.status = 'conditional';
+                    updateData.conditions = conditions;
+                    approvalData.conditions = conditions;
+                    
+                    // Add conditional approval notification
+                    await db.collection('notifications').add({
+                        type: 'event_conditional',
+                        eventId: eventId,
+                        recipientEmail: event.createdBy,
+                        message: `Your event "${event.eventName}" has been conditionally approved by ${currentUserRole}. Please review the conditions.`,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'unread'
+                    });
+                    
+                    // If Director is conditionally approving, notify all authorities
+                    if (currentUserRole === 'Director') {
+                        // Update event with conditions before sending email
+                        const updatedEvent = {...event, conditions: conditions};
+                        notifyAuthoritiesViaEmail(updatedEvent, 'conditional');
+                    }
+                    break;
+
+                default: // Regular approval
+                    const nextLevel = currentUserLevel + 1;
+                    if (nextLevel > 10) {
+                        updateData.status = 'approved';
+                        updateData.currentApprovalLevel = null;
+                        
+                        // Add final approval notification
+                        await db.collection('notifications').add({
+                            type: 'event_approved',
+                            eventId: eventId,
+                            recipientEmail: event.createdBy,
+                            message: `Your event "${event.eventName}" has been fully approved!`,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'unread'
+                        });
+                        
+                        // If Director is approving, notify all authorities
+                        if (currentUserRole === 'Director') {
+                            notifyAuthoritiesViaEmail(event, 'approve');
+                        }
+                        
+                        // Check if Food Incharge needs to be notified
+                        if (event.requiredAuthorities && event.requiredAuthorities.includes('Food Incharge')) {
+                            await notifyFoodIncharge({...event, id: eventId});
+                        }
+                    } else {
+                        updateData.currentApprovalLevel = nextLevel;
+                        
+                        // Add next level notification
+                        await db.collection('notifications').add({
+                            type: 'event_next_level',
+                            eventId: eventId,
+                            recipientEmail: event.createdBy,
+                            message: `Your event "${event.eventName}" has been approved by ${currentUserRole} and moved to the next level.`,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'unread'
+                        });
+                    }
+                    break;
+            }
+        }
+
+        // First, add the approval history
+        await db.collection('approval_history').add({
+            ...approvalData,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Then update the event document
+        await db.collection('events').doc(eventId).update(updateData);
+
+        showAlert(`Event ${action}ed successfully`, 'success');
+        
+        // Refresh the displays
+        await loadPendingApprovals();
+        await loadEventDetails(eventId);
+
+    } catch (error) {
+        console.error('Error processing approval:', error);
+        showAlert('Error processing approval: ' + error.message, 'error');
+    }
+}
+
+function getApprovalLevelForRole(role) {
+    const roleLevels = {
+        'Club Head': 1,
+        'Faculty Mentor': 2,
+        'President/Vice President': 3,
+        'HOD': 4,
+        'Rector': 5,
+        'Purchase Officer': 6,
+        'Accounts Officer': 7,
+        'Administration Officer': 8,
+        'Deputy Registrar': 9,
+        'Director': 10,
+        'IT Admin': 11,
+        'Food Incharge': 12
+    };
+    
+    return roleLevels[role] || 0;
+}
+
+        // Utility Functions
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '9999';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Logout Handler
+        document.getElementById('logoutBtn').onclick = () => {
+
+            auth.signOut().then(() => {
+                window.location.href = 'authority-login.html';
+            }).catch(error => {
+                console.error('Logout error:', error);
+                showAlert('Error logging out', 'error');
+            });
+        };
+    </script>
+</body>
+</html>
